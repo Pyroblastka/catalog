@@ -37,7 +37,7 @@ public class ProductController {
         Product product = productRepository.getOne(productId);
         model.addAttribute("product", product);
 
-        return "/product";
+        return "product";
     }
 
     @GetMapping("/productq")
@@ -46,7 +46,13 @@ public class ProductController {
         if(productName==null||productName=="") {
             return "redirect:/index";
         }
-        Product product = productRepository.findByName(productName);
+        Product product = null;
+        List<Product> products = productRepository.findByNameContainsIgnoreCase(productName);
+        if(products.size()>0){
+            products.removeIf(p -> p.getCategory().getName().compareTo("deleted")==0);
+            product = products.get(0);
+        }
+
         if(product == null)
         {
             Category category = null;
@@ -62,7 +68,7 @@ public class ProductController {
             }
         }
         model.addAttribute("product", product);
-        return "/product";
+        return "product";
     }
 
     @GetMapping("/products")
@@ -71,7 +77,7 @@ public class ProductController {
         List<Product> list = productRepository.findByCategory(catRepository.getOne(catId));
         model.addAttribute("products", list);
 
-        return "/products";
+        return "products";
     }
 
 }

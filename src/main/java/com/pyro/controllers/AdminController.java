@@ -48,7 +48,7 @@ public class AdminController {
     public String get(Model model) {
         model.addAttribute("defaultProduct", new Product());
         model.addAttribute("categories", catRepository.findAll());
-        return "/addproduct";
+        return "addproduct";
     }
 
     @PostMapping("/admin/product")
@@ -98,7 +98,7 @@ public class AdminController {
     public String editProduct(@RequestParam("id") Long id, Model model) {
         model.addAttribute("defaultProduct", productRepository.getOne(id));
         model.addAttribute("categories", catRepository.findAll());
-        return "/addproduct";
+        return "addproduct";
     }
 
     private void sendMessageToAll(Product product) {

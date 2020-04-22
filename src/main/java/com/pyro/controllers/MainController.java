@@ -28,18 +28,18 @@ public class MainController {
 
     @GetMapping(value = {"/", "/index"})
     public String index() {
-        return "/index";
+        return "index";
     }
 
     @GetMapping("/private")
     public String privateCab(Model model, Principal principal) {
-        return "/private";
+        return "private";
     }
 
     @GetMapping("/registration")
     public String reg(Model model) {
 
-        return "/registration";
+        return "registration";
     }
 
     @PostMapping("/registration")
@@ -58,12 +58,12 @@ public class MainController {
         }
         User user = new User(1, username, password, Arrays.asList(roleRepository.findByName("ROLE_USER")));
         userService.save(user);
-        return "/index";
+        return "index";
     }
 
     @GetMapping("/user")
     public String user() {
-        return "/user";
+        return "user";
     }
 
     @GetMapping("/about")
@@ -73,11 +73,11 @@ public class MainController {
 
     @GetMapping("/login")
     public String login() {
-        return "/login";
+        return "login";
     }
 
     @GetMapping("/403")
     public String error403() {
-        return "/error/403";
+        return "error/403";
     }
 }
