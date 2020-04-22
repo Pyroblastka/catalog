@@ -48,7 +48,7 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
     @Transactional
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
-        if (roleRepository.findAll().size() == 0) {
+        if (catRepository.findAll().size() < 2) {
             System.out.println("\n______________INITIALIZATION______________");
 
             //roles
