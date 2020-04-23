@@ -89,15 +89,15 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
 
             //Categories
             Category category = new Category();
-            category.setId(1L);
+            category.setId(8L);
             category.setName("Луковичные");
             catRepository.saveAndFlush(category);
             category = new Category();
-            category.setId(2L);
+            category.setId(9L);
             category.setName("Кактусы");
             catRepository.saveAndFlush(category);
             category = new Category();
-            category.setId(3L);
+            category.setId(10L);
             category.setName("Хищные");
             catRepository.saveAndFlush(category);
 

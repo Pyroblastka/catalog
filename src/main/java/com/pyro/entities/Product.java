@@ -30,10 +30,10 @@ public class Product extends AbstractEntity {
         this.name = name;
         this.description = description;
         this.category= category;
-        if (image.contains("http://localhost:9090/getFile/")) {
+        if (image.contains("/getFile/")) {
             this.src = image;
         } else {
-            this.src = "http://localhost:9090/getFile/" + image;
+            this.src = "/getFile/" + image;
         }
     }
 
@@ -42,10 +42,10 @@ public class Product extends AbstractEntity {
     }
 
     public void setSrc(String image) {
-        if (image.contains("http://localhost:9090/getFile/")) {
+        if (image.contains("/getFile/")) {
             this.src = image;
         } else {
-            this.src = "http://localhost:9090/getFile/" + image;
+            this.src = "/getFile/" + image;
         }
     }
 
