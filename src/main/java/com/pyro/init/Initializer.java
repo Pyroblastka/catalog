@@ -54,19 +54,6 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
             System.out.println("\n______________INITIALIZATION______________");
 
 
-            //Images
-            String onion;
-            String cactus;
-            String predator;
-            try{
-                onion = loadImage("static/images/onion.jpg");
-                cactus = loadImage("static/images/cactus.jpg");
-                predator = loadImage("static/images/predator.jpg");
-            }
-            catch (Exception e){
-                System.out.println("files were not loaded");
-                return;
-            }
 
             //roles
             Role role = new Role();
@@ -101,6 +88,20 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
             category.setName("Хищные");
             catRepository.saveAndFlush(category);
 
+
+            //Images
+            String onion;
+            String cactus;
+            String predator;
+            try{
+                onion = loadImage("static/images/onion.jpg");
+                cactus = loadImage("static/images/cactus.jpg");
+                predator = loadImage("static/images/predator.jpg");
+            }
+            catch (Exception e){
+                System.out.println("files were not loaded");
+                return;
+            }
 
             //Products
             Product product = new Product("Зефирантес",
