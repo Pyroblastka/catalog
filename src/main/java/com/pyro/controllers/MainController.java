@@ -1,7 +1,9 @@
 package com.pyro.controllers;
 
 import com.pyro.entities.User;
+import com.pyro.repositories.CatRepository;
 import com.pyro.repositories.MessageRepository;
+import com.pyro.repositories.ProductRepository;
 import com.pyro.repositories.RoleRepository;
 import com.pyro.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class MainController {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    ProductRepository productRepository;
     @Autowired
     UserService userService;
 
@@ -27,7 +32,8 @@ public class MainController {
 
 
     @GetMapping(value = {"/", "/index"})
-    public String index() {
+    public String index(Model model) {
+        model.addAttribute("products", productRepository.findAll());
         return "index";
     }
 

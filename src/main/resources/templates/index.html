@@ -12,18 +12,21 @@
 
 <div class="container">
     <div class="row">
-        <a href="/products?catId=70">
+        <div th:each="product : ${products}">
+        <a th:href="@{/products(catId=${product.category.id})}">
         <div class="col-sm-4">
             <div class="card-body">
                 <div class="card" style="width: 18rem;">
-                    <img src="images/onion.jpg" class="card-image">
+                    <img th:src="${product.src}" src="images/onion.jpg" class="card-image">
                     <div class="card-body">
-                        <p class="card-text">Луковичные растения</p>
+                        <p class="card-text" th:text="${product.category.name}">Луковичные растения</p>
                     </div>
                 </div>
             </div>
         </div>
         </a>
+        </div>
+        <!--
         <a href="/products?catId=72">
         <div class="col-sm-4">
             <div class="card-body">
@@ -50,6 +53,7 @@
         </a>
 
     </div>
+    -->
     <!--  text  -->
 
 </div>

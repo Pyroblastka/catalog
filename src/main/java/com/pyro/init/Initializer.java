@@ -14,11 +14,13 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,6 +53,21 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
         if (catRepository.findAll().size() < 2) {
             System.out.println("\n______________INITIALIZATION______________");
 
+
+            //Images
+            String onion;
+            String cactus;
+            String predator;
+            try{
+                onion = loadImage("static/images/onion.jpg");
+                cactus = loadImage("static/images/cactus.jpg");
+                predator = loadImage("static/images/predator.jpg");
+            }
+            catch (Exception e){
+                System.out.println("files were not loaded");
+                return;
+            }
+
             //roles
             Role role = new Role();
             role.setName("ROLE_ADMIN");
@@ -72,19 +89,18 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
 
             //Categories
             Category category = new Category();
+            category.setId(1L);
             category.setName("Луковичные");
             catRepository.saveAndFlush(category);
             category = new Category();
+            category.setId(2L);
             category.setName("Кактусы");
             catRepository.saveAndFlush(category);
             category = new Category();
+            category.setId(3L);
             category.setName("Хищные");
             catRepository.saveAndFlush(category);
 
-            //Images
-            String onion = loadImage("C:\\Users\\IK\\Desktop\\catalog\\src\\main\\resources\\static\\images\\onion.jpg");
-            String cactus = loadImage("C:\\Users\\IK\\Desktop\\catalog\\src\\main\\resources\\static\\images\\cactus.jpg");
-            String predator = loadImage("C:\\Users\\IK\\Desktop\\catalog\\src\\main\\resources\\static\\images\\predator.jpg");
 
             //Products
             Product product = new Product("Зефирантес",
@@ -108,8 +124,10 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
         }
     }
 
-    public  String loadImage(String pathName) {
-        Path path = Paths.get(pathName);
+    public  String loadImage(String pathName) throws IOException {
+        File resource = new ClassPathResource(
+                pathName).getFile();
+        Path path = Paths.get(resource.getAbsolutePath());
         byte[] content = null;
         try {
             content = Files.readAllBytes(path);
