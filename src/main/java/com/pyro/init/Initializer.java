@@ -127,7 +127,7 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
     public  String loadImage(String pathName) throws IOException {
         File resource = new ClassPathResource(
                 pathName).getFile();
-        Path path = Paths.get(resource.getAbsolutePath());
+        Path path = Paths.get(resource.getPath());
         byte[] content = null;
         try {
             content = Files.readAllBytes(path);
