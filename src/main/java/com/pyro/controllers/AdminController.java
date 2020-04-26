@@ -10,12 +10,14 @@ import com.pyro.repositories.ProductRepository;
 import com.pyro.service.DBFileStorageService;
 import com.pyro.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,6 +54,27 @@ public class AdminController {
     }
 
     @PostMapping("/admin/product")
+    public String add(@ModelAttribute("product") Product product,
+                      @RequestParam("image") MultipartFile image) throws IOException {
+
+        Long sid = null;
+        if (image.getOriginalFilename().compareTo("") != 0) {//Сохранить изображение есть пришло с формы
+            sid = fileStorageService.storeFile(image).getId();
+            product.setSrc(String.valueOf(sid));
+        }
+
+            if (sid == null) {
+                String noimage = loadImage("static/images/noimage.jpg");
+                product.setSrc(noimage);
+            }
+
+        productRepository.saveAndFlush(product);
+        return "redirect:/products?catId=" + product.getCategory().getId();
+    }
+
+/*
+
+ @PostMapping("/admin/product")
     public String add(@RequestParam("id") Long id,
                       @RequestParam("category") Long catId,
                       @RequestParam("name") String name,
@@ -74,7 +97,7 @@ public class AdminController {
                 product.setSrc(sid.toString());
         } else {//если добавление
             if (sid == null) {
-                String noimage = loadImage("C:\\Users\\IK\\Desktop\\catalog\\src\\main\\resources\\static\\images\\noimage.jpg");
+                String noimage = loadImage("static/images/noimage.jpg");
                 product = new Product(name, description, noimage, catRepository.getOne(catId));
             } else {
                 product = new Product(name, description, sid.toString(), catRepository.getOne(catId));
@@ -84,7 +107,7 @@ public class AdminController {
         productRepository.saveAndFlush(product);
         return "redirect:/products?catId=" + product.getCategory().getId();
     }
-
+ */
 
     @RequestMapping(value = "/admin/deleteproduct", method = RequestMethod.POST)
     public String deleteProduct(@RequestParam("id") Long id, @RequestParam("category") Long catId) {
@@ -112,8 +135,10 @@ public class AdminController {
         }
     }
 
-    public String loadImage(String pathName) {
-        Path path = Paths.get(pathName);
+    public  String loadImage(String pathName) throws IOException {
+        File resource = new ClassPathResource(
+                pathName).getFile();
+        Path path = Paths.get(resource.getPath());
         byte[] content = null;
         try {
             content = Files.readAllBytes(path);

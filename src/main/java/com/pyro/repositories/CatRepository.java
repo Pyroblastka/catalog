@@ -10,4 +10,10 @@ import java.util.List;
 public interface CatRepository extends JpaRepository<Category, Long> {
     Category findByName(String name);
     List<Category> findByNameContainsIgnoreCase(String name);
+    List<Category> findByKindomContainsIgnoreCase(String Kindom);
+    List<Category> findByPhylumContainsIgnoreCase(String Phylum);
+    List<Category> findByClasContainsIgnoreCase(String clas);
+    List<Category> findByOrderContainsIgnoreCase(String order);
+    List<Category> findByFamilyContainsIgnoreCase(String family);
+    List<Category> findByGenusContainsIgnoreCase(String genus);
 }
