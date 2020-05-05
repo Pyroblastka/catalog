@@ -78,43 +78,6 @@ public class AdminController {
         return "redirect:/products/genus?catId=" + product.getGenus().getId();
     }
 
-/*
-
- @PostMapping("/admin/product")
-    public String add(@RequestParam("id") Long id,
-                      @RequestParam("category") Long catId,
-                      @RequestParam("name") String name,
-                      @RequestParam("description") String description,
-                      @RequestParam("src") MultipartFile image) throws IOException {
-
-        Long sid = null;
-        Product product = null;
-
-        if (image.getOriginalFilename().compareTo("") != 0)//Сохранить изображение есть пришло с формы
-            sid = fileStorageService.storeFile(image).getId();
-
-        if (id != 0) {//если редактирование
-            product = productRepository.getOne(id);
-            product.setCategory(catRepository.getOne(catId));
-            product.setName(name);
-            product.setDescription(description);
-
-            if (sid != null)
-                product.setSrc(sid.toString());
-        } else {//если добавление
-            if (sid == null) {
-                String noimage = loadImage("static/images/noimage.jpg");
-                product = new Product(name, description, noimage, catRepository.getOne(catId));
-            } else {
-                product = new Product(name, description, sid.toString(), catRepository.getOne(catId));
-            }
-            sendMessageToAll(product);
-        }
-        productRepository.saveAndFlush(product);
-        return "redirect:/products?catId=" + product.getCategory().getId();
-    }
- */
-
     @RequestMapping(value = "/admin/deleteproduct", method = RequestMethod.POST)
     public String deleteProduct(@RequestParam("id") Long id, @RequestParam("category") Long catId) {
 
