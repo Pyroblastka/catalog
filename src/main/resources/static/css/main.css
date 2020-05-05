@@ -1,5 +1,6 @@
 body{
-    background: linear-gradient(45deg, #EECFBA, #C5DDE8);;
+    background: linear-gradient(45deg, #EECFBA, #C5DDE8);
+    padding-bottom: 70px;
 }
 .card-image{
     height: 18rem;
@@ -13,10 +14,15 @@ body{
 }
 footer{
     width: 100%;
-    position:fixed;
+
     white-space: nowrap;
     bottom:0;
 }
 .tdtext{
-    margin-left: 3%;
+    text-align: justify;
+}
+
+.catList{
+
+    background: initial;
 }

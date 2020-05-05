@@ -1,0 +1,120 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+>
+<head>
+</head>
+<body>
+<div th:fragment="comments">
+
+
+    <div sec:authorize="hasAnyRole('ROLE_USER, ROLE_ADMIN')">
+        <div class="row">
+            <div class="col">
+                <form action="/sendcomment" method="post">
+                    <input name="product" hidden="hidden" th:value="${product.name}">
+                    <input name="msg" type="number" hidden="hidden">
+                    <div class="form-group">
+                        <label for="comment">Ваш комментарий</label>
+                        <textarea maxlength="300" id="comment" name="comment" class="form-control" rows="3" onfocusout="clearMsgId(this)"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-outline-secondary">Отправить</button>
+                </form>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <ul class="list-group list-group-flush">
+
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-1">Автор</div>
+                <div class="col">Пост</div>
+            </div>
+        </li>
+
+        <li class="list-group-item" th:each="message : ${product.messages}">
+            <div class="row">
+                <div class="col-1">
+                    <a href="#"
+                       class="bbp-author-avatar">
+                        <img th:src="@{/images/noimage.jpg}" src="" class='avatar avatar-80 photo' height="80"
+                             width="80"/>
+                    </a>
+                    <div class="col">
+                        <a href="#" th:text="${message.user.username}">author</a>
+                        <div class="bbp-author-role">Member</div>
+                    </div>
+                </div>
+                <div class="col ">
+                    <div class="messageBody">
+                        <p th:text="${message.text}">It would be good if there was possibility to add comments between
+                            blocks in CSS files. Also
+                            because sometimes, when copying some CSS with comments between, BS doesn&#8217;t know how to
+                            handle that.</p>
+                        <span class="bbp-reply-post-date" th:text="${message.date}">December 6, 2017 at 8:25 am</span>
+
+                    <div class="action" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <button th:name="${message.id}" type="button" class="btn btn-info btn-xs" title="Edit" onclick="edit(this)">
+                            <span class="fal fa-pen"></span>
+                        </button>
+
+                        <button th:name="${message.id}" type="button" class="btn btn-danger btn-xs" title="Delete" onclick="rem(this)">
+                            <span class="far fa-trash-alt"></span>
+                        </button>
+                    </div>
+                    </div>
+                </div>
+
+            </div>
+        </li><!-- .bbp-body -->
+
+
+    </ul><!-- #topic-8286-replies -->
+
+    <script>
+
+        async function send() {
+
+            fetch(document.location.origin + "/sendcomment/?value=" + input.value, {
+                credentials: 'same-origin',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(response => response.json())
+                .then(resp => {
+                    if (resp.toString() == 'ok') {
+
+                    }
+                });
+        }
+
+        async function edit(btn) {
+
+            let elem  = document.getElementsByName(btn.name)[0];
+            elem = elem.parentNode.parentNode;
+            let text = elem.firstElementChild.firstElementChild.innerText;
+
+            let idInput = document.getElementsByName('msg')[0];
+            idInput.value = btn.name;
+
+            let area = document.getElementsByTagName('textarea')[0];
+            area.value = text;
+            area.focus();
+        }
+
+        function rem(btn) {
+            document.location.href='/deletecomment?msgId='+btn.name;
+        }
+
+        function clearMsgId(area) {
+            if(area.value.length===0){
+                let idInput = document.getElementsByName('msg')[0];
+                idInput.value = '';
+            }
+        }
+    </script>
+</div>
+
+</body>
+</html>

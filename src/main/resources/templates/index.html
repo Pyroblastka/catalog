@@ -11,46 +11,66 @@
 <div th:replace="fragments/header :: header"/>
 
 <div class="container">
-    <div class="row">
-        <div th:each="product : ${products}">
-        <a th:href="@{/products(catId=${product.category.id})}">
-        <div class="col-sm-4">
-            <div class="card-body">
-                <div class="card" style="width: 18rem;">
-                    <img th:src="${product.src}" src="images/onion.jpg" class="card-image">
-                    <div class="card-body">
-                        <p class="card-text" th:text="${product.category.name}">Луковичные растения</p>
+
+    <img th:src="@{images/background2.jpg}" class="img-fluid">
+    <div class="jumbotron">
+        <div class="row">
+
+            <div class="col-sm">
+
+                <a th:href="@{/products/kingdom(catId=${kingdoms[0].id})}" href="#">
+                    <div class="card">
+                        <img th:src="@{/images/plant.jpg}" src="images/onion.jpg" class="card-img-top">
+                        <div class="card-body">
+
+                            <p class="card-text" th:text="${kingdoms[0].name}">Луковичные растения</p>
+                        </div>
                     </div>
+                </a>
+
+            </div>
+
+            <div class="col-sm">
+
+                <a th:href="@{/products/kingdom(catId=${kingdoms[1].id})}" href="#">
+                    <div class="card">
+                        <img th:src="@{/images/animal.jpg}" src="images/onion.jpg" class="card-img-top">
+                        <div class="card-body">
+
+                            <p class="card-text" th:text="${kingdoms[1].name}">Луковичные растения</p>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+    <!--
+    <a href="/products?catId=72">
+    <div class="col-sm-4">
+        <div class="card-body">
+            <div class="card" style="width: 18rem;">
+                <img src="images/predator.jpg" class="card-image">
+                <div class="card-body">
+                    <p class="card-text">Хищные растения</p>
                 </div>
             </div>
         </div>
-        </a>
-        </div>
-        <!--
-        <a href="/products?catId=72">
-        <div class="col-sm-4">
-            <div class="card-body">
-                <div class="card" style="width: 18rem;">
-                    <img src="images/predator.jpg" class="card-image">
-                    <div class="card-body">
-                        <p class="card-text">Хищные растения</p>
-                    </div>
+    </div>
+    </a>
+    <a href="/products?catId=71">
+    <div class="col-sm-4">
+        <div class="card-body">
+            <div class="card" style="width: 18rem;">
+                <img src="images/cactus.jpg" class="card-image">
+                <div class="card-body">
+                    <p class="card-text">Кактусы</p>
                 </div>
             </div>
         </div>
-        </a>
-        <a href="/products?catId=71">
-        <div class="col-sm-4">
-            <div class="card-body">
-                <div class="card" style="width: 18rem;">
-                    <img src="images/cactus.jpg" class="card-image">
-                    <div class="card-body">
-                        <p class="card-text">Кактусы</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </a>
+    </div>
+    </a>
 
     </div>
     -->

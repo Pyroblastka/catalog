@@ -10,91 +10,120 @@
 
 <div class="container">
     <div class="jumbotron">
-
-        <form action="/admin/product" method="post" enctype="multipart/form-data" th:object="${defaultProduct}">
+<table>
+    <tr>
+        <td style="padding-right: 3%; width: 50%">
+            <form action="/admin/product" method="post" enctype="multipart/form-data" th:object="${defaultProduct}">
             <input name="id" type="number" hidden="hidden" th:value="${defaultProduct.id}">
-            <div class="form-group col-md-6">
-                <label for="inputCategory">Категория</label>
-                <select id="inputCategory" name="category" class="form-control" required>
-                    <option
-                            th:each="cat : ${categories}"
-                            th:value="${cat.id}"
-                            th:text="${cat.name}"
-                            th:field=" ${defaultProduct.category}">
-                    </option>
-                </select>
+            <div class="form-group  ">
                 <!-- cat start -->
-
                 <div class="accordion" id="accordionExample">
                     <div class="card">
                         <div class="card-header" id="headingOne">
                             <h5 class="mb-0">
                                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Classification
+                                    Классификация
                                 </button>
                             </h5>
                         </div>
 
-                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                        <div id="collapseOne"  aria-labelledby="headingOne" data-parent="#accordionExample">
                             <div class="card-body">
 
-                                <div class="form-group col-md-6">
+                                <div class="form-group  ">
                                     <label for="name">Царство</label>
-                                    <input name="kingdom" type="text" class="form-control" id="catKingdom"  placeholder="Kingdom"
-                                           maxlength=25 th:field="${defaultProduct.category.kindom}">
+                                    <input name="kingdom" type="text" class="form-control" id="catKingdom"  placeholder="Kingdom" required
+                                           maxlength=25 th:field="${defaultProduct.genus.family.order.klass.phylum.kingdom.name}">
                                 </div>
 
-                                <div class="form-group col-md-6">
+                                <div class="form-group  ">
                                     <label for="name">Тип</label>
-                                    <input name="type" type="text" class="form-control" id="catType"  placeholder="Type"
-                                           maxlength=25 th:field="${defaultProduct.category.phylum}">
+                                    <input name="type" type="text" class="form-control" id="catType"  placeholder="Type" required
+                                           maxlength=25 th:field="${defaultProduct.genus.family.order.klass.phylum.name}">
                                 </div>
 
-                                <div class="form-group col-md-6">
+                                <div class="form-group  ">
                                     <label for="name">Класс</label>
-                                    <input name="class" type="text" class="form-control" id="catClass"  placeholder="Class"
-                                           maxlength=25 th:field="${defaultProduct.category.clas}">
+                                    <input name="class" type="text" class="form-control" id="catClass"  placeholder="Class" required
+                                           maxlength=25 th:field="${defaultProduct.genus.family.order.klass.name}">
                                 </div>
 
-                                <div class="form-group col-md-6">
-                                    <label for="name">Класс</label>
-                                    <input name="class" type="text" class="form-control" id="catOrder"  placeholder="Order"
-                                           maxlength=25 th:field="${defaultProduct.category.clas}">
+                                <div class="form-group  ">
+                                    <label for="name">Порядок</label>
+                                    <input name="class" type="text" class="form-control" id="catOrder"  placeholder="Order" required
+                                           maxlength=25 th:field="${defaultProduct.genus.family.order.name}">
                                 </div>
+
+                                <div class="form-group  ">
+                                    <label for="name">Семейство</label>
+                                    <input name="class" type="text" class="form-control" id="catFamily"  placeholder="Family" required
+                                           maxlength=25 th:field="${defaultProduct.genus.family.name}">
+                                </div>
+
+                                <div class="form-group  ">
+                                    <label for="name">Род</label>
+                                    <input name="class" type="text" class="form-control" id="catGenus"  placeholder="Genus" required
+                                           maxlength=25 th:field="${defaultProduct.genus.name}">
+                                </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <!-- Cat end -->
 
-
-
             </div>
-            <div class="form-group col-md-6">
-                <label for="name">Название продукта</label>
+            <div class="form-group  ">
+                <label for="name">Название</label>
                 <input name="name" type="text" class="form-control" id="name"  placeholder="Product name" required
-                      maxlength=19 th:field="${defaultProduct.name}">
+                      maxlength=75 th:field="${defaultProduct.name}">
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group  ">
                 <label for="Description">Описание</label>
                 <textarea path="description" name="description" maxlength="1024" class="form-control" id="Description" required rows="5"
                           placeholder="Description" th:field="${defaultProduct.description}">
                 </textarea>
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group  ">
                 <label for="Image">Изображение</label>
-                <input type="file" name="image" class="form-control-file" id="Image" >
+                <input id="imgInput" type="file" name="image" class="form-control-file" >
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group  ">
                 <button type="submit" class="btn btn-primary">Подтвердить</button>
             </div>
         </form>
+        </td>
+
+    <td valign="top">
+        <img id = "image" th:src="${defaultProduct.src}" class="product-image">
+    </td>
+    </tr>
+</table>
     </div>
 
 </div>
+<script>
+    function readURL(input) {
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#image').attr('src', e.target.result);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imgInput").change(function(){
+        readURL(this);
+    });
+</script>
+
 
 <div th:replace="fragments/footer :: footer"/>
+
 
 </body>
 </html>

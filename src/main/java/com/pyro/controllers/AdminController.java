@@ -4,13 +4,17 @@ package com.pyro.controllers;
 import com.pyro.entities.Message;
 import com.pyro.entities.Product;
 import com.pyro.entities.User;
-import com.pyro.repositories.CatRepository;
 import com.pyro.repositories.MessageRepository;
 import com.pyro.repositories.ProductRepository;
+import com.pyro.repositories.classification.GenusRepository;
+import com.pyro.service.ClassificationService;
 import com.pyro.service.DBFileStorageService;
 import com.pyro.service.UserService;
+import com.pyro.service.classification.ProductService;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +34,7 @@ public class AdminController {
     @Autowired
     ProductRepository productRepository;
     @Autowired
-    CatRepository catRepository;
+    GenusRepository catRepository;
     @Autowired
     DBFileStorageService fileStorageService;
     @Autowired
@@ -39,6 +43,8 @@ public class AdminController {
     MessageRepository messageRepository;
     @Autowired
     private DBFileStorageService imageService;
+    @Autowired
+    private ProductService productService;
 
     @GetMapping("/admin")
     public String admin(Model model) {
@@ -48,8 +54,9 @@ public class AdminController {
 
     @GetMapping("/admin/product")
     public String get(Model model) {
+
         model.addAttribute("defaultProduct", new Product());
-        model.addAttribute("categories", catRepository.findAll());
+
         return "addproduct";
     }
 
@@ -63,13 +70,12 @@ public class AdminController {
             product.setSrc(String.valueOf(sid));
         }
 
-            if (sid == null) {
-                String noimage = loadImage("static/images/noimage.jpg");
-                product.setSrc(noimage);
-            }
-
-        productRepository.saveAndFlush(product);
-        return "redirect:/products?catId=" + product.getCategory().getId();
+        if (sid == null && product.getSrc() == null) {
+            String noimage = loadImage("static/images/noimage.jpg");
+            product.setSrc(noimage);
+        }
+        productService.save(product);
+        return "redirect:/products/genus?catId=" + product.getGenus().getId();
     }
 
 /*
@@ -111,16 +117,17 @@ public class AdminController {
 
     @RequestMapping(value = "/admin/deleteproduct", method = RequestMethod.POST)
     public String deleteProduct(@RequestParam("id") Long id, @RequestParam("category") Long catId) {
-        Product product = productRepository.getOne(id);
-        product.setCategory(catRepository.getOne(0L));
-        productRepository.saveAndFlush(product);
+
+        productRepository.deleteById(id);
         return "redirect:/products?catId=" + catId.toString();
     }
 
+
     @RequestMapping(value = "/admin/editproduct", method = RequestMethod.GET)
     public String editProduct(@RequestParam("id") Long id, Model model) {
-        model.addAttribute("defaultProduct", productRepository.getOne(id));
-        model.addAttribute("categories", catRepository.findAll());
+        Product product = productRepository.findById(id).get();
+        Hibernate.initialize(product);
+        model.addAttribute("defaultProduct", product);
         return "addproduct";
     }
 
@@ -135,7 +142,7 @@ public class AdminController {
         }
     }
 
-    public  String loadImage(String pathName) throws IOException {
+    public String loadImage(String pathName) throws IOException {
         File resource = new ClassPathResource(
                 pathName).getFile();
         Path path = Paths.get(resource.getPath());

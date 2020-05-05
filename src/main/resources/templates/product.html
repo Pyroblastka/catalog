@@ -14,39 +14,96 @@
 
         <div th:if="${bought == 1}" class="alert alert-block alert-success messages status">
             <a class="close" data-dismiss="alert" href="#">×</a>
-            Товар <em class="placeholder" th:text="${product.name}">Гроб Солнце с деревом 3</em> добавлен <a href="/private">в корзину</a>.
+            Товар <em class="placeholder" th:text="${product.name}">Гроб Солнце с деревом 3</em> добавлен <a
+                href="/private">в корзину</a>.
         </div>
 
-        <table>
-            <tbody>
-            <tr>
-                <td rowspan="2"> <img th:src="${product.src}" class="product-image"> </td>
-                <td valign="top" width="100%">
-                    <h1 class="display-4 tdtext" th:text="${product.name}">Hello, world!</h1>
-                    <hr class="my-4">
-                    <br>
-                    <p class="lead tdtext" th:text="${product.description}">product descriprion.</p>
-                </td>
-            </tr>
-            <tr>
-                <td valign="bottom">
-                    <div class=" tdtext btn-group" role="group" aria-label="Basic example">
-                        <form sec:authorize="hasRole('ROLE_ADMIN')" action="/admin/editproduct" method="get">
-                            <input th:value="${product.id}" name="id" type="number" hidden="hidden">
-                            <button type="submit" class="btn btn-outline-info">Редактировать</button>
-                        </form>  
-                        <form sec:authorize="hasRole('ROLE_ADMIN')" action="/admin/deleteproduct" method="post">
-                            <input th:value="${product.id}" name="id" type="number" hidden="hidden">
-                            <input th:value="${product.category.id}" name="category" type="number" hidden="hidden">
-                            <button sec:authorize="hasRole('ROLE_ADMIN')" type="submit"
-                                    class="btn btn-outline-danger">Удалить</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div class="row " sec:authorize="hasRole('ROLE_ADMIN')">
+            <div class="col">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <form  action="/admin/editproduct" method="get">
+                        <input th:value="${product.id}" name="id" type="number" hidden="hidden">
+                        <button type="submit" class="btn btn-outline-info">Редактировать</button>
+                    </form>
+                      
+                    <form action="/admin/deleteproduct" method="post">
+                        <input th:value="${product.id}" name="id" type="number" hidden="hidden">
+                        <input th:value="${product.category.id}" name="category" type="number" hidden="hidden">
+                        <button type="submit"
+                                class="btn btn-outline-danger">Удалить
+                        </button>
+                    </form>
+                </div>
+            </div>
 
+        </div>
+        <hr sec:authorize="hasRole('ROLE_ADMIN')" >
+
+        <div class="row ">
+            <div class="col">
+                <img th:src="${product.src}" class="product-image">
+            </div> <!--IMAGE SRC-->
+            <div class="col "> <!--RIGHT PART-->
+
+                <div class="row ">
+                    <div class="col ">
+                        <h1 class="display-4" th:text="${product.name}">Hello, world!</h1>
+                    </div>
+                </div><!--PRODUCT NAME-->
+
+
+                <div class="row align-items-end">
+                    <div class="col ">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                style="background: initial;">
+                                <div th:text="'Царство'"></div>
+                                <div class="my-2 my-lg-0" th:text="${product.hierarchy.kingdom}"/>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                style="background: initial;">
+                                <div th:text="'Тип'"></div>
+                                <div class="my-2 my-lg-0" th:text="${product.hierarchy.phylum}"/>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                style="background: initial;">
+                                <div th:text="'Класс'"></div>
+                                <div class="my-2 my-lg-0" th:text="${product.hierarchy.klass}"/>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                style="background: initial;">
+                                <div th:text="'Отряд'"></div>
+                                <div class="my-2 my-lg-0" th:text="${product.hierarchy.order}"/>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                style="background: initial;">
+                                <div th:text="'Семейство'"></div>
+                                <div class="my-2 my-lg-0" th:text="${product.hierarchy.family}"/>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                style="background: initial;">
+                                <div th:text="'Род'"></div>
+                                <div class="my-2 my-lg-0" th:text="${product.hierarchy.genus}"/>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <hr class="my-4">
+                <p class="lead tdtext" th:text="${product.description}">product descriprion.</p>
+            </div>
+        </div>
+
+        <div class="row">
+        <div class="col">
+            <div th:replace="fragments/comments :: comments"/>
+        </div>
+        </div>
     </div>
 
 </div>

@@ -7,13 +7,17 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
               integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+              integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+       <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
                 integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
                 crossorigin="anonymous"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
                 integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
                 crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
 
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
                 integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
@@ -22,9 +26,11 @@
         <!--link rel="stylesheet" href="https://bootswatch.com/4/slate/bootstrap.min.css"-->
         <link rel="stylesheet" href="https://bootswatch.com/4/united/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/comments.css}"/>
+
     </div>
 </head>
-<div th:fragment="header">
+<div th:fragment="header" style="width: 100%">
     <title>ZooHerbal wikiTalk</title>
     <!-- this is header -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -40,13 +46,13 @@
                     <a class="nav-link" href="/">На главную <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/products?catId=8">Луковичные</a>
+                    <a class="nav-link" href="/plants">Растения</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/products?catId=9">Кактусы</a>
+                    <a class="nav-link" href="/animals">Животные</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/products?catId=10">Хищные</a>
+                    <a class="nav-link" href="#">Форум</a>
                 </li>
 
             </ul>
@@ -70,10 +76,11 @@
                 <a sec:authorize="isAuthenticated()" href="/logout" class="btn btn-outline-info my-2 my-sm-0">Выйти</a>
             </div>
         </div>
+
     </nav>
-    <button type="button" onclick="goBack()" style="margin-top: 20px; margin-left: 10px;"
+    <!--button type="button" onclick="goBack()" style="margin-top: 20px; margin-left: 10px;"
             class="btn btn-outline-secondary">Назад
-    </button>
+    </button-->
     <script>
         function goBack() {
             window.history.go(-1);
@@ -81,7 +88,7 @@
 
         async function search(input) {
 
-            fetch("http://localhost:9090/searchq/?value=" + input.value, {
+            fetch(document.location.origin+"/searchq/?value=" + input.value, {
                 credentials: 'same-origin',
                 method: 'POST',
                 headers : {
@@ -90,8 +97,8 @@
             }).then(response => response.json())
                 .then(products => {
                     document.getElementById("results").innerHTML = '';
-                    for (var i of products) {
-                        var optionElement = document.createElement("option");
+                    for (let i of products) {
+                        let optionElement = document.createElement("option");
                         optionElement.value = i.name;
                         document.getElementById("results").appendChild(optionElement);
                     }

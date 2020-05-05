@@ -1,10 +1,11 @@
 package com.pyro.controllers;
 
 import com.pyro.entities.User;
-import com.pyro.repositories.CatRepository;
+import com.pyro.entities.classification.Kingdom;
 import com.pyro.repositories.MessageRepository;
 import com.pyro.repositories.ProductRepository;
 import com.pyro.repositories.RoleRepository;
+import com.pyro.repositories.classification.KingdomRepository;
 import com.pyro.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class MainController {
@@ -28,24 +31,33 @@ public class MainController {
     UserService userService;
 
     @Autowired
+    KingdomRepository kingdomRepository;
+
+    @Autowired
     MessageRepository messageRepository;
 
 
     @GetMapping(value = {"/", "/index"})
     public String index(Model model) {
-        model.addAttribute("products", productRepository.findAll());
+        model.addAttribute("kingdoms", kingdomRepository.findAll());
         return "index";
     }
 
-    @GetMapping("/private")
-    public String privateCab(Model model, Principal principal) {
-        return "private";
-    }
 
     @GetMapping("/registration")
     public String reg(Model model) {
 
         return "registration";
+    }
+
+    @GetMapping("/plants")
+    public String plants() {
+        return "redirect:/products/kingdom?catId="+kingdomRepository.findByName("Растения").getId();
+    }
+
+    @GetMapping("/animals")
+    public String animals() {
+        return "redirect:/products/kingdom?catId="+kingdomRepository.findByName("Животные").getId();
     }
 
     @PostMapping("/registration")
@@ -64,7 +76,7 @@ public class MainController {
         }
         User user = new User(1, username, password, Arrays.asList(roleRepository.findByName("ROLE_USER")));
         userService.save(user);
-        return "index";
+        return "redirect:/";
     }
 
     @GetMapping("/user")

@@ -1,28 +1,35 @@
 package com.pyro.entities.classification;
 
-import com.pyro.entities.AbstractEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pyro.entities.Product;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "class_order")
-public class Genus extends AbstractEntity {
+@Entity
+public class Genus extends AbstractStair {
+
+    @OneToMany(mappedBy = "genus", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<Product> products;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "family_id", nullable = true)
+    Family family;
 
     @Column
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<Product> products;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    Family family;
-
     public Genus(String name) {
         this.name = name;
+        this.products = new ArrayList<>();
     }
 
-    public Genus() {   }
+    public Genus() {
+    }
 
     public String getName() {
         return name;
@@ -32,7 +39,7 @@ public class Genus extends AbstractEntity {
         this.name = name;
     }
 
-
+    @JsonIgnore
     public List<Product> getProducts() {
         return products;
     }
@@ -41,6 +48,12 @@ public class Genus extends AbstractEntity {
         this.products = products;
     }
 
+    @Override
+    public List<Product> getAllProducts() {
+        return products;
+    }
+
+    @JsonIgnore
     public Family getFamily() {
         return family;
     }
@@ -49,5 +62,15 @@ public class Genus extends AbstractEntity {
         this.family = family;
     }
 
-    
+    public String loadAllHierarchy() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.name);
+        sb.append(this.family.getName());
+        sb.append(this.family.order.getName());
+        sb.append(this.family.order.klass.getName());
+        sb.append(this.family.order.klass.phylum.getName());
+        sb.append(this.family.order.klass.phylum.kingdom.getName());
+        return sb.toString();
+    }
 }

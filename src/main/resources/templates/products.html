@@ -2,31 +2,71 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <div th:replace="fragments/header :: header-css"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/sidebar.css}"/>
 </head>
 <body>
-
+<div class="row"
 <div th:replace="fragments/header :: header"/>
-
-<div class="container">
-    <div class="row">
-        <div th:each="product : ${products}">
-            <a th:href="@{/product(productId=${product.id})}">
-                <div class="col-sm-3">
-                    <div class="card-body">
-                        <div class="card" style="width: 13rem;">
-                            <img src="images/coffin.jpg" th:src="${product.src}" class="small-card-image">
-                            <div class="card-body">
-                                <p class="card-text" th:text="${product.name}">Гробы</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
+</div>
+<div class="row " >
+    <div class="col-3">
+        <div class="sidenav" id="sidenav">
+            <a th:href="@{/products/kingdom}" href="#about" class="point">Царство<span class="badge badge-secondary" th:text="${kingdomCount}"></span></a>
+            <a th:href="@{/products/phylum}" href="#services" class="point">Тип<span class="badge badge-secondary" th:text="${phylumCount}"></span></a>
+            <a th:href="@{/products/klass}" href="#clients" class="point">Класс<span class="badge badge-secondary"th:text="${klassCount}">2</span></a>
+            <a th:href="@{/products/order}" href="#contact" class="point">Отряд<span class="badge badge-secondary"th:text="${orderCount}">2</span></a>
+            <a th:href="@{/products/family}" href="#contact" class="point">Семейство<span class="badge badge-secondary"th:text="${familyCount}">2</span></a>
+            <a th:href="@{/products/genus}" href="#contact" class="point">Род<span class="badge badge-secondary"th:text="${genusCount}">2</span></a>
         </div>
     </div>
+
+    <div class="col-sm-8" style="margin-top: 5%">
+        <h1 th:text="${catname}">Категории</h1>
+        <hr>
+        <div class="row">
+            <div class="col-4" th:each="product1 : ${products}">
+                <a th:href="@{/products/{path}(path = ${path}, catId=${product1.id})}" href="#">
+                    <div class="card" style="margin-bottom: 5%">
+                        <img th:src="${product1.src}" src="images/onion.jpg" class="small-card-image">
+                        <div class="card-body">
+
+                            <p class="card-text" th:text="${product1.name}">Луковичные растения</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
 </div>
+
+<script>
+    function highlight() {
+
+        let list = document.getElementsByClassName('point');
+        let location = document.location.href
+        location = location.split('/');
+        location = location[location.length-1];
+        location = location.split('?');
+        location = location[0];
+        for (let i = 0; i < list.length; i++) {
+            let elem = list[i].getAttribute('href')
+                elem = elem.split('/')[2];
+            if(elem==location){
+                list[i].setAttribute('class','chosen' );
+            }
+
+        }
+    }
+    document.addEventListener("DOMContentLoaded", highlight);
+</script>
+
 <!-- /.container -->
+
+
 <div th:replace="fragments/footer :: footer"/>
+
 
 </body>
 </html>

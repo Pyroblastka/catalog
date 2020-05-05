@@ -7,15 +7,11 @@
 <div th:fragment="footer">
     <br>
     <hr>
-        <footer class="footer">
+        <footer class="page-footer  fixed-bottom">
 
-            <div align="center" class="footer-copyright text-center py-3 ">
+            <div class="footer-copyright text-center py-3  ">
                 ©2020 pyro.com
             </div>
-            <span sec:authorize="isAuthenticated()">| Logged user: <span sec:authentication="name"></span> |
-                Roles: <span sec:authentication="principal.authorities"></span> |
-                <a th:href="@{/logout}">Sign Out</a>
-            </span>
         </footer>
 </div>
 </body>

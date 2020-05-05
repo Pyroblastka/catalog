@@ -16,6 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <jackson.version>2.5.2</jackson.version>
         <springtools.version>2.1.6.RELEASE</springtools.version>
     </properties>
 
@@ -62,22 +63,11 @@
         </dependency>
 
         <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>4.4.1</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>${springtools.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-mock</artifactId>
-            <version>2.0.8</version>
-        </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -116,18 +106,12 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- AspectJ dependencies -->
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>1.9.5</version>
-            <scope>runtime</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-mock</artifactId>
+            <version>2.0.8</version>
         </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjtools</artifactId>
-            <version>1.9.5</version>
-        </dependency>
+
     </dependencies>
 
     <build>

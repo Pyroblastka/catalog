@@ -1,14 +1,15 @@
 package com.pyro.init;
 
-import com.pyro.entities.Category;
 import com.pyro.entities.Product;
 import com.pyro.entities.Role;
 import com.pyro.entities.User;
-import com.pyro.repositories.CatRepository;
+import com.pyro.entities.classification.*;
 import com.pyro.repositories.ProductRepository;
 import com.pyro.repositories.RoleRepository;
+import com.pyro.repositories.classification.*;
 import com.pyro.service.DBFileStorageService;
 import com.pyro.service.UserService;
+import com.pyro.service.classification.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -36,10 +37,26 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
     private RoleRepository roleRepository;
 
     @Autowired
-    private CatRepository catRepository;
+    private GenusRepository genusRepository;
+
 
     @Autowired
-    private ProductRepository productRepository;
+    private FamilyRepository familyRepository;
+
+    @Autowired
+    private KlassRepository klassRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private PhylumRepository phylumRepository;
+
+    @Autowired
+    private KingdomRepository kingdomRepository;
+
+    @Autowired
+    private ProductService productRepository;
 
     @Autowired
     private UserService userService;
@@ -50,9 +67,8 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
     @Transactional
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
-        if (catRepository.findAll().size() < 2) {
+        if (genusRepository.findAll().size() < 1) {
             System.out.println("\n______________INITIALIZATION______________");
-
 
 
             //roles
@@ -75,57 +91,60 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
             userService.save(user);
 
             //Categories
-            Category category = new Category();
-            category.setId(8L);
-            category.setName("Луковичные");
-            catRepository.saveAndFlush(category);
-            category = new Category();
-            category.setId(9L);
-            category.setName("Кактусы");
-            catRepository.saveAndFlush(category);
-            category = new Category();
-            category.setId(10L);
-            category.setName("Хищные");
-            catRepository.saveAndFlush(category);
+            Kingdom kingdom = new Kingdom("Растения");
+            Phylum phylum = new Phylum("Цветковые");
+            Klass klass = new Klass("Двудольные");
+            com.pyro.entities.classification.Order order =
+                    new com.pyro.entities.classification.Order("Гвоздичноцветные");
+                Family family = new Family("Кактусовые");
+            Genus genus = new Genus("Маммиллярия");
+            genus.setFamily( family);
+
+            //family.getGenuses().add(genus);
+            family.setOrder(order);
+            //order.getFamilies().add(family);
+            order.setKlass(klass);
+            //klass.getOrders().add(order);
+            klass.setPhylum(phylum);
+            //phylum.getKlasses().add(klass);
+            phylum.setKingdom(kingdom);
+            //kingdom.getPhylums().add(phylum);
 
 
             //Images
-            String onion;
+
             String cactus;
-            String predator;
-            try{
-                onion = loadImage("static/images/onion.jpg");
+            try {
                 cactus = loadImage("static/images/cactus.jpg");
-                predator = loadImage("static/images/predator.jpg");
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 System.out.println("files were not loaded");
                 return;
             }
 
             //Products
-            Product product = new Product("Зефирантес",
-                    "Растение зефирантес (Zephyranthes) относится к семейству Амариллисовые. Этот род объединяет примерно 35 видов, которые в природных условиях можно повстречать в Центральной и Южной Америке, при этом они предпочитают расти во влажных местностях.", onion,
-                    catRepository.findByName("Луковичные"));
-            productRepository.saveAndFlush(product);
 
-            product = new Product("Саррацения",
-                    "Саррацения — это болотное, корневищное, травянистое растение является многолетником. Оно входит в число наиболее больших плотоядных растений.", predator,
-                    catRepository.findByName("Хищные"));
-            productRepository.saveAndFlush(product);
-
-            product = new Product("Маммиллярия",
-                    "Одним из самых популярных кактусов среди цветоводов является маммиллярия, "+
-                            "которая отличается своей неприхотливостью и нетребовательностью к уходу. Родом данные кактусы из "+
-                            "южной части Северной Америки, а также из Мексики, причем в природных условиях они предпочитают "+
+            Product product = new Product("Маммиллярия",
+                    "Одним из самых популярных кактусов среди цветоводов является маммиллярия, " +
+                            "которая отличается своей неприхотливостью и нетребовательностью к уходу. Родом данные кактусы из " +
+                            "южной части Северной Америки, а также из Мексики, причем в природных условиях они предпочитают " +
                             "расти на меловых и известковых скалах.", cactus,
-                    catRepository.findByName("Кактусы"));
-            productRepository.saveAndFlush(product);
+                    genus);
+
+
+           /* kingdomRepository.saveAndFlush(kingdom);
+            phylumRepository.saveAndFlush(phylum);
+            orderRepository.saveAndFlush(order);
+            klassRepository.saveAndFlush(klass);
+            familyRepository.saveAndFlush(family);
+            genusRepository.saveAndFlush(genus);
+*/
+
+            productRepository.save(product);
 
         }
     }
 
-    public  String loadImage(String pathName) throws IOException {
+    public String loadImage(String pathName) throws IOException {
         File resource = new ClassPathResource(
                 pathName).getFile();
         Path path = Paths.get(resource.getPath());

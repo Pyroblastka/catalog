@@ -1,9 +1,9 @@
 package com.pyro.service;
 
-import com.pyro.entities.Category;
 import com.pyro.entities.Product;
-import com.pyro.repositories.CatRepository;
+import com.pyro.entities.classification.Genus;
 import com.pyro.repositories.ProductRepository;
+import com.pyro.repositories.classification.GenusRepository;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -30,7 +30,7 @@ public class Toxls {
     ProductRepository productRepository;
 
     @Autowired
-    CatRepository catRepository;
+    GenusRepository genusRepository;
 
     @Transactional
     @SuppressWarnings("deprecation")
@@ -49,15 +49,15 @@ public class Toxls {
         // Нумерация начинается с нуля
         Row row;
         Cell cell1, cell2;
-        List<Category> categories = catRepository.findAll();
+        List<Genus> genuses = genusRepository.findAll();
         //List<Product> products = productRepository.findAll();
-        for (int i = 0, r=0; i<categories.size(); i++) {
+        for (int i = 0, r=0; i<genuses.size(); i++) {
             row = sheet.createRow(r);
             cell1 = row.createCell(0);
-            cell1.setCellValue(categories.get(i).getName());
+            cell1.setCellValue(genuses.get(i).getName());
             cell1.setCellStyle(style);
             r++;
-            List<Product> products =productRepository.findByCategory(categories.get(i));
+            List<Product> products =productRepository.findByGenus(genuses.get(i));
             for (int j = 0; j< products.size(); j++) {
 
                 row = sheet.createRow(r);
