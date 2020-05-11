@@ -112,7 +112,9 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
             try {
                 cactus = loadImage("static/images/cactus.jpg");
             } catch (Exception e) {
+
                 System.out.println("files were not loaded");
+                e.printStackTrace();
                 return;
             }
 
