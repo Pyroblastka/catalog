@@ -3,6 +3,7 @@ package com.pyro.controllers;
 
 import com.pyro.entities.Message;
 import com.pyro.entities.Product;
+import com.pyro.entities.User;
 import com.pyro.entities.classification.AbstractStair;
 import com.pyro.entities.classification.Genus;
 import com.pyro.repositories.ProductRepository;
@@ -16,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,11 +39,21 @@ public class ProductController {
     @GetMapping("/product")
     public String getProduct(@RequestParam(value = "productId", required = true) Long productId,
                              @RequestParam(value = "bought", required = false) String bought,
-                             Model model) {
+                             Model model, Principal principal) {
+
 
         Product product = productRepository.getOne(productId);
         Hibernate.initialize(product);
         Collections.sort(product.getMessages(), Message::compareTo);
+        if (principal != null) {
+            User user = userService.findByUsername(principal.getName());
+            if (user.getFavorits().contains(product))
+                model.addAttribute("starChecked", true);
+        }
+        else{
+            model.addAttribute("starChecked", false);
+        }
+        model.addAttribute("isDiscussion","false");
 
         model.addAttribute("product", product);
 
@@ -60,12 +72,11 @@ public class ProductController {
             model.addAttribute("product", products.get(0));
             return "product";
         } else {
-            try{
+            try {
                 AbstractStair stair = classificationService.findByNameContainsIgnoreCase(productName).get(0);
                 String[] category = stair.getClass().getName().split("\\.");
-                return "redirect:/products/"+category[category.length-1].toLowerCase()+"?catId="+stair.getId();
-            }
-            catch (Exception e){
+                return "redirect:/products/" + category[category.length - 1].toLowerCase() + "?catId=" + stair.getId();
+            } catch (Exception e) {
                 return "redirect:/index";
             }
         }

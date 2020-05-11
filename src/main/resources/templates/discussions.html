@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <div th:replace="fragments/header :: header-css"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/sidebar.css}"/>
+</head>
+<body>
+
+    <div th:replace="fragments/header :: header"/>
+
+
+<div class="container" style="margin-top: 5%">
+    <div class="row">
+        <div class="col">
+            <h1>
+                Обсуждения
+            </h1>
+        </div>
+        <div class="col">
+            <button  sec:authorize="hasAnyRole('ROLE_USER, ROLE_ADMIN')"  onclick="toggleForm()" class="btn btn-success float-right"> Добавить тему</button>
+        </div>
+    </div>
+
+    <div th:class="row" id="addingform" hidden>
+        <div class="col">
+            <form th:action="@{/discussion/new}" method="post" enctype="multipart/form-data" style="margin-top: 3%">
+                <div class="form-group  ">
+                    <label for="topic">Введите название темы</label>
+                    <input id="topic" type="text" name="topic" class="form-control">
+                </div>
+                <div class="form-group  ">
+                    <button id="submitBtn" type="submit" class="btn btn-success">Создать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <hr>
+    <input type="text" id="filter" class="form-control" placeholder="Фильтр">
+    <hr>
+    <div class="row">
+        <div class="col">
+            <ul class="list-group list-group-flush" id="myList">
+                <li class="list-group-item" th:each="discussion : ${discussions}" >
+                    <a  th:href="@{/discussion/{path}(path = ${discussion.id})}" th:text="${discussion.name}">Cras justo odio</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+
+
+
+
+    function toggleForm() {
+        let elem = document.getElementById("addingform");
+        elem.toggleAttribute('hidden');
+    }
+
+   
+
+    $(document).ready(function () {
+
+
+        $("#filter").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myList li").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+
+<div th:replace="fragments/footer :: footer"/>
+
+
+</body>
+</html>

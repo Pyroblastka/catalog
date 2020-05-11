@@ -6,7 +6,7 @@ import java.util.Date;
 @Entity
 public class Message extends AbstractEntity implements Comparable<Message> {
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinColumn(name = "customer", nullable = false)
     private User user;
 

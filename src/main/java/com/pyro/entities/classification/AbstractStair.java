@@ -8,6 +8,8 @@ import java.util.List;
 
 public abstract class AbstractStair extends AbstractEntity {
 
+    public abstract String getName();
+
     public abstract List<Product> getAllProducts();
 
     public Product product;

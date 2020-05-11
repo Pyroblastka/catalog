@@ -39,6 +39,6 @@ public class DBFileStorageService {
     }
     @Transactional
     public DBFile getFile(String fileName) throws IOException {
-        return dbFileRepository.findByFileName(fileName);
+        return dbFileRepository.findFirstByFileName(fileName);
     }
 }

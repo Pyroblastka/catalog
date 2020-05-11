@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@javax.persistence.Table(name = "customer")
+@Table(name = "customer")
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING)
 public class User extends AbstractEntity {
 
@@ -22,6 +22,13 @@ public class User extends AbstractEntity {
     private String password;
     @Column
     private String src;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "favorites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
+    private List<Product> favorits;
 
     public User() {
     }
@@ -66,5 +73,21 @@ public class User extends AbstractEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(int enabled) {
+        this.enabled = enabled;
+    }
+
+    public List<Product> getFavorits() {
+        return favorits;
+    }
+
+    public void setFavorits(List<Product> favorits) {
+        this.favorits = favorits;
     }
 }

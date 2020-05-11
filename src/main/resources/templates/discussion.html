@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <div th:replace="fragments/header :: header-css"/>
+</head>
+<body>
+
+<div th:replace="fragments/header :: header"/>
+
+<div class="container">
+
+    <input th:value="${product.id}" name="id" type="number" hidden="hidden" id="unique">
+
+
+    <div class="row " style="margin-top: 5%">
+        <div class="col align-self-end">
+            <h1 class="display-4">
+                <div th:text="${product.name} "></div>
+            </h1>
+        </div>
+    </div><!--PRODUCT NAME-->
+    <div class="row " sec:authorize="hasRole('ROLE_ADMIN')">
+        <div class="col">
+
+            <form action="/admin/deletedisscussion" method="post">
+                <input th:value="${product.id}" name="id" type="number" hidden="hidden">
+                <button type="submit"
+                        class="btn btn-outline-danger">Удалить
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <hr>
+            <div th:replace="fragments/comments :: comments"/>
+        </div>
+    </div>
+</div>
+
+</div>
+<script>
+
+
+    var productId = $("#unique").val();
+
+    $("#star").click(function () {
+        let t = JSON.stringify({"productId": productId});
+        $.post({
+            url: 'private/favorite',               // указываем URL и
+            dataType: "json",                     // тип загружаемых данных
+            contentType: "application/json; charset=utf-8",
+            data: t,
+            success: function (data, textStatus) { // вешаем свой обработчик на функцию success
+                if (data === true) {
+                    $("#star").addClass('fas');
+                } else {
+                    $("#star").removeClass('fas');
+                }
+            }
+        });
+    });
+
+</script>
+<div th:replace="fragments/footer :: footer"/>
+
+</body>
+</html>

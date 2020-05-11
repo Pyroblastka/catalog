@@ -1,8 +1,10 @@
 package com.pyro.controllers;
 
+import com.pyro.entities.Discussion;
 import com.pyro.entities.Message;
 import com.pyro.entities.Product;
 import com.pyro.entities.User;
+import com.pyro.repositories.DiscussionRepository;
 import com.pyro.repositories.MessageRepository;
 import com.pyro.repositories.ProductRepository;
 import com.pyro.service.DBFileStorageService;
@@ -20,6 +22,9 @@ import java.util.Date;
 
 @Controller
 public class CommentController {
+
+    @Autowired
+    DiscussionRepository discussionRepository;
     @Autowired
     UserService userService;
     @Autowired
@@ -32,29 +37,38 @@ public class CommentController {
     @PostMapping("/sendcomment")
     public String add(@RequestParam("comment") String msg,
                       @RequestParam("product") String product,
+                      @RequestParam("isDiscussion") String isDiscussion,
                       HttpServletRequest request,
                       @RequestParam(value = "msg", required = false) long messageId,
                       Principal principal) throws IOException {
 
-        if (messageId != 0L){
+        if (messageId != 0L) {
 
             Message message = messageRepository.getOne(messageId);
             message.setText(msg);
             messageRepository.saveAndFlush(message);
             String referer = request.getHeader("Referer");
-            return "redirect:"+ referer;
+            return "redirect:" + referer;
         }
 
-
-            User user = userService.findByUsername(principal.getName());
-
+        User user = userService.findByUsername(principal.getName());
         Message message = new Message(user, product, msg, new Date());
-        message = messageRepository.saveAndFlush(message);
-        Product product1 = productService.findByName(product);
-        product1.getMessages().add(message);
-        productService.saveAndFlush(product1);
 
-        return "redirect:/product?productId=" + product1.getId();
+        message = messageRepository.saveAndFlush(message);
+
+        if (isDiscussion.equals("false")) {
+            Product product1 = productService.findByName(product);
+            product1.getMessages().add(message);
+            productService.saveAndFlush(product1);
+            return "redirect:/product?productId=" + product1.getId();
+        } else {
+
+            Discussion disc = discussionRepository.findByName(product);
+            disc.getMessages().add(message);
+            discussionRepository.saveAndFlush(disc);
+
+            return "redirect:/discussion/" + disc.getId();
+        }
     }
 
     @GetMapping("/deletecomment")
@@ -65,10 +79,17 @@ public class CommentController {
 
 
         Product product = productService.findByName(msg.getHeader());
-        product.getMessages().removeIf(e -> e.getId()==messageId);
-        productService.saveAndFlush(product);
+        if (product != null) {
+            product.getMessages().removeIf(e -> e.getId() == messageId);
+            productService.saveAndFlush(product);
+        } else {
+            Discussion discussion = discussionRepository.findByName(msg.getHeader());
+            discussion.getMessages().removeIf(e -> e.getId() == messageId);
+            discussionRepository.saveAndFlush(discussion);
+        }
+
         messageRepository.delete(msg);
         String referer = request.getHeader("Referer");
-        return "redirect:"+ referer;
+        return "redirect:" + referer;
     }
 }

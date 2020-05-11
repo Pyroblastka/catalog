@@ -6,15 +6,18 @@
 <body>
 <div th:fragment="comments">
 
-
+    <div  sec:authorize="hasRole('ROLE_ANONYMOUS')" >
+        <h5>Чтобы оставить комментарий, пожалуйста, <a th:href="@{/login}">авторизируйтесь.</a></h5>
+    </div>
     <div sec:authorize="hasAnyRole('ROLE_USER, ROLE_ADMIN')">
         <div class="row">
             <div class="col">
                 <form action="/sendcomment" method="post">
-                    <input name="product" hidden="hidden" th:value="${product.name}">
-                    <input name="msg" type="number" hidden="hidden">
+                    <input name="product" hidden="hidden" th:value="${product.name}" value="0">
+                    <input name="isDiscussion" hidden="hidden" th:value="${isDiscussion}" type="text">
+                    <input name="msg" type="number" hidden="hidden" value="0">
                     <div class="form-group">
-                        <label for="comment">Ваш комментарий</label>
+                        <label for="comment">Ваше сообщение</label>
                         <textarea maxlength="300" id="comment" name="comment" class="form-control" rows="3" onfocusout="clearMsgId(this)"></textarea>
                     </div>
                     <button type="submit" class="btn btn-outline-secondary">Отправить</button>
@@ -37,7 +40,7 @@
                 <div class="col-1">
                     <a href="#"
                        class="bbp-author-avatar">
-                        <img th:src="@{/images/noimage.jpg}" src="" class='avatar avatar-80 photo' height="80"
+                        <img th:src="${message.user.src}" src="" class='avatar avatar-80 photo' height="80"
                              width="80"/>
                     </a>
                     <div class="col">
@@ -93,7 +96,7 @@
 
             let elem  = document.getElementsByName(btn.name)[0];
             elem = elem.parentNode.parentNode;
-            let text = elem.firstElementChild.firstElementChild.innerText;
+            let text = elem.firstElementChild.innerText;
 
             let idInput = document.getElementsByName('msg')[0];
             idInput.value = btn.name;

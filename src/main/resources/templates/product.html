@@ -11,6 +11,8 @@
 
 
     <div class="jumbotron">
+        <input th:value="${product.id}" name="id" type="number" hidden="hidden" id="unique">
+
 
         <div th:if="${bought == 1}" class="alert alert-block alert-success messages status">
             <a class="close" data-dismiss="alert" href="#">×</a>
@@ -47,11 +49,14 @@
 
                 <div class="row ">
                     <div class="col ">
-                        <h1 class="display-4" th:text="${product.name}">Hello, world!</h1>
+                        <h1 class="display-4"><div th:text="${product.name} "></div> </h1>
                     </div>
+
+                    <h3>
+                        <span  th:if="${starChecked}" style="color:orange" id="star" class="far fa-star fas" ></span>
+                        <span  th:if="not ${starChecked}" style="color:orange" id="star" class="far fa-star" ></span>
+                    </h3>
                 </div><!--PRODUCT NAME-->
-
-
                 <div class="row align-items-end">
                     <div class="col ">
                         <ul class="list-group list-group-flush">
@@ -101,13 +106,36 @@
 
         <div class="row">
         <div class="col">
+            <hr>
             <div th:replace="fragments/comments :: comments"/>
         </div>
         </div>
     </div>
 
 </div>
+<script>
 
+
+    var productId = $("#unique").val();
+
+    $("#star").click(function () {
+        let t = JSON.stringify({"productId":productId});
+        $.post({
+            url: 'private/favorite',               // указываем URL и
+            dataType : "json",                     // тип загружаемых данных
+            contentType: "application/json; charset=utf-8",
+            data: t,
+            success: function (data, textStatus) { // вешаем свой обработчик на функцию success
+                if(data === true){
+                    $("#star").addClass('fas');
+                } else {
+                    $("#star").removeClass('fas');
+                }
+            }
+        });
+    });
+
+</script>
 <div th:replace="fragments/footer :: footer"/>
 
 </body>

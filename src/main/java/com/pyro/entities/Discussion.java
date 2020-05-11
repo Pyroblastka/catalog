@@ -13,7 +13,7 @@ public class Discussion extends AbstractEntity {
     @Column
     private final Date date;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     List<Message> messages;
 
     public Discussion() {

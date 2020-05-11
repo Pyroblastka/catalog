@@ -80,6 +80,8 @@ public class CategoryController {
             downStairs.removeIf(o -> o.getId() != catId);
             List lowerList = getLowerList(downStairs.get(0));
             model.addAttribute("products", lowerList);
+            String attr = model.asMap().get("catname").toString();
+            model.addAttribute("catname", attr+" "+ downStairs.get(0).getName());
             classNameForPath = lowerList.get(0).getClass().getName();
         } else {
             model.addAttribute("products", downStairs);

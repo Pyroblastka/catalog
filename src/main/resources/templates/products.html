@@ -5,10 +5,10 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/sidebar.css}"/>
 </head>
 <body>
-<div class="row"
+
 <div th:replace="fragments/header :: header"/>
-</div>
-<div class="row " >
+
+<div class="row "  style="margin-top: 5%" >
     <div class="col-3">
         <div class="sidenav" id="sidenav">
             <a th:href="@{/products/kingdom}" href="#about" class="point">Царство<span class="badge badge-secondary" th:text="${kingdomCount}"></span></a>
@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    <div class="col-sm-8" style="margin-top: 5%">
+    <div class="col-sm-8">
         <h1 th:text="${catname}">Категории</h1>
         <hr>
         <div class="row">
@@ -37,8 +37,6 @@
             </div>
         </div>
     </div>
-
-
 </div>
 
 <script>

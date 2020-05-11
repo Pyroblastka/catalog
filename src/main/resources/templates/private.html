@@ -13,46 +13,108 @@
 
         <h1 th:text="'Личный кабинет ' + ${user.username}"></h1>
         <hr>
-        <img th:src="${user.src}" class="product-image" th:if="${user.src != null}">
-        <form th:action="@{/private/pic}">
-            <div class="form-group  ">
-                <label for="imgInput">Обновить аватар</label>
-                <input id="imgInput" type="file" name="image" class="form-control-file" >
+        <div class="row">
+            <div class="col">
+                <img id="image" th:src="${user.src}" class="product-image">
             </div>
-        </form>
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
-                   aria-selected="true">Избранное</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="goods-tab" data-toggle="tab" href="#goods" role="tab" aria-controls="goods"
-                   aria-selected="true">Мои обсуждения</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                   aria-controls="profile" aria-selected="false">Статистика</a>
-            </li>
-        </ul>
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                <hr>
-                <ul class="list-group">
-                    <li th:each="message : ${messages}" data-toggle="collapse"  th:attr="data-target='#demo'+${message.id}"
-                        class="list-group-item d-flex justify-content-between align-items-center">
-                            <div th:text="${message.header}"  >
-                            </div>
-                            <div class="my-2 my-lg-0" th:text="${message.date}"></div>
-                            <div th:id="'demo'+${message.id}" class="collapse" th:text="${message.text}">
-                                Lorem ipsum dolor text....
-                            </div>
+            <div class="col">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#favorites" role="tab"
+                           aria-controls="home"
+                           aria-selected="true">Избранное</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="goods-tab" data-toggle="tab" href="#disscuss" role="tab"
+                           aria-controls="goods"
+                           aria-selected="false">Мои обсуждения</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#statistic" role="tab"
+                           aria-controls="statistic" aria-selected="false">Статистика</a>
                     </li>
                 </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade" id="disscuss" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="overflow-auto " style="max-height: 29rem;">
+                            <ul class="list-group">
+                                <li th:each="message : ${messages}"
+                                    th:attr="data-target='#demo'+${message.key}"
+                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a th:href="${message.value}">
+                                    <div th:text="${message.key}">
+                                    </div>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="statistic" role="tabpanel" aria-labelledby="statistic-tab">
+                        <div class="overflow-auto">
+                            <br>
+                            <div class="col">
+                                <p>Последняя активность: <b th:text="${lastDate}"></b></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade active show" id="favorites" role="tabpanel" aria-labelledby="favorites-tab">
+                        <div class="overflow-auto">
+                            <div class="overflow-auto " style="max-height: 29rem;">
+                                <ul class="list-group">
+                                    <li th:each="product : ${user.favorits}"
+
+                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                        <a th:href="'/product?productId=' + ${product.id}">
+                                            <div th:text="${product.name}">
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form th:action="@{/private/pic}" method="post" enctype="multipart/form-data" style="margin-top: 3%">
+                    <div class="form-group  ">
+                        <label for="imgInput">Обновить аватар</label>
+                        <input id="imgInput" type="file" name="image" class="form-control-file">
+                    </div>
+                    <div class="form-group  ">
+                        <button id="submitBtn" hidden type="submit" class="btn btn-success">Обновить</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
 </div>
+
+<script>
+    function readURL(input) {
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#image').attr('src', e.target.result);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imgInput").change(function () {
+        $("#submitBtn").removeAttr("hidden");
+        readURL(this);
+    });
+</script>
+
 
 <div th:replace="fragments/footer :: footer"/>
 

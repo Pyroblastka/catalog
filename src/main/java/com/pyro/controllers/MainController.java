@@ -6,6 +6,7 @@ import com.pyro.repositories.MessageRepository;
 import com.pyro.repositories.ProductRepository;
 import com.pyro.repositories.RoleRepository;
 import com.pyro.repositories.classification.KingdomRepository;
+import com.pyro.service.DBFileStorageService;
 import com.pyro.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +26,8 @@ public class MainController {
 
     @Autowired
     RoleRepository roleRepository;
+    @Autowired
+    private DBFileStorageService imageService;
 
     @Autowired
     ProductRepository productRepository;
@@ -63,7 +67,7 @@ public class MainController {
     @PostMapping("/registration")
     public String addUser(@RequestParam("username") String username,
                           @RequestParam("password") String password,
-                          Model model) {
+                          Model model) throws IOException {
 
 
         if (userService.findByUsername(username) != null) {
@@ -75,6 +79,7 @@ public class MainController {
             return "/registration";
         }
         User user = new User(1, username, password, Arrays.asList(roleRepository.findByName("ROLE_USER")));
+        user.setSrc((String.valueOf( imageService.getFile("noimage.jpg").getId())));
         userService.save(user);
         return "redirect:/";
     }
@@ -90,7 +95,9 @@ public class MainController {
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(HttpServletRequest request) {
+        String referrer = request.getHeader("Referer");
+        request.getSession().setAttribute("url_prior_login", referrer);
         return "login";
     }
 

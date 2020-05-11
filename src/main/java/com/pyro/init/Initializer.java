@@ -67,7 +67,7 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
     @Transactional
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
-        if (genusRepository.findAll().size() < 1) {
+        if (roleRepository.findAll().size() < 1) {
             System.out.println("\n______________INITIALIZATION______________");
 
 
@@ -99,16 +99,11 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
                 Family family = new Family("Кактусовые");
             Genus genus = new Genus("Маммиллярия");
             genus.setFamily( family);
-
-            //family.getGenuses().add(genus);
             family.setOrder(order);
-            //order.getFamilies().add(family);
             order.setKlass(klass);
-            //klass.getOrders().add(order);
             klass.setPhylum(phylum);
-            //phylum.getKlasses().add(klass);
             phylum.setKingdom(kingdom);
-            //kingdom.getPhylums().add(phylum);
+
 
 
             //Images
@@ -152,7 +147,11 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
         try {
             content = Files.readAllBytes(path);
         } catch (final IOException e) {
+
             System.out.println("\n_____cannot read bytes_____!");
+            System.out.println(e.getMessage());
+            System.out.println("\n___________________________!");
+
         }
 
         MultipartFile result = new MockMultipartFile(path.getFileName().toString(),

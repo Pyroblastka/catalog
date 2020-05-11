@@ -1,8 +1,11 @@
 package com.pyro.controllers;
 
+import com.pyro.entities.Discussion;
 import com.pyro.entities.Product;
 import com.pyro.entities.User;
+import com.pyro.repositories.DiscussionRepository;
 import com.pyro.repositories.MessageRepository;
+import com.pyro.repositories.ProductRepository;
 import com.pyro.service.DBFileStorageService;
 import com.pyro.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +14,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +25,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class PrivateController {
@@ -34,6 +39,12 @@ public class PrivateController {
     MessageRepository messageRepository;
 
     @Autowired
+    ProductRepository productRepository;
+
+    @Autowired
+    DiscussionRepository discussionRepository;
+
+    @Autowired
     private DBFileStorageService imageService;
 
 
@@ -41,7 +52,24 @@ public class PrivateController {
     public String privateCab(Model model, Principal principal) {
 
         User user = userService.findByUsername(principal.getName());
+
         model.addAttribute("user", user);
+        List<String> headers = messageRepository.findHeadersByUserIdGroupByHeader(user.getId());
+        Map<String, String> map = new HashMap<>();
+
+        for (String i : headers) {
+            Product product = productRepository.findByName(i);
+            if (product != null) {
+                map.put(i, "/product?productId=" + product.getId());
+            } else {
+                Discussion discussion = discussionRepository.findByName(i);
+                map.put(i, "/discussion/" + discussion.getId());
+            }
+        }
+
+        model.addAttribute("messages", map);
+        model.addAttribute("lastDate", messageRepository.findByUserOrderByDateDesc(user).get(0).getDate());
+
         return "private";
     }
 
@@ -61,11 +89,11 @@ public class PrivateController {
         }
         userService.save(user);
         String referer = request.getHeader("Referer");
-        return "redirect:"+ referer;
+        return "redirect:" + referer;
     }
 
 
-    public  String loadImage(String pathName) throws IOException {
+    private String loadImage(String pathName) throws IOException {
         File resource = new ClassPathResource(
                 pathName).getFile();
         Path path = Paths.get(resource.getPath());
