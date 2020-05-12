@@ -13,6 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -94,12 +95,11 @@ public class PrivateController {
 
 
     private String loadImage(String pathName) throws IOException {
-        File resource = new ClassPathResource(
-                pathName).getFile();
+        ClassPathResource resource = new ClassPathResource(pathName);
         Path path = Paths.get(resource.getPath());
         byte[] content = null;
         try {
-            content = Files.readAllBytes(path);
+            content =  FileCopyUtils.copyToByteArray(resource.getInputStream());
         } catch (final IOException e) {
             System.out.println("\n_____cannot read bytes_____!");
             e.printStackTrace();
