@@ -72,11 +72,11 @@ public class MainController {
 
         if (userService.findByUsername(username) != null) {
             model.addAttribute("error", "Пользователь " + username + " уже зарегистрирован");
-            return "/registration";
+            return "registration";
         }
         if (!(username.matches("^[a-zA-Z0-9]+$"))) {
             model.addAttribute("error", "Имя пользователя может содержать только латиницу и цифры");
-            return "/registration";
+            return "registration";
         }
         User user = new User(1, username, password, Arrays.asList(roleRepository.findByName("ROLE_USER")));
         user.setSrc((String.valueOf( imageService.getFile("noimage.jpg").getId())));

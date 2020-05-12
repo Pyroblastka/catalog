@@ -111,6 +111,7 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
 
             String cactus;
             try {
+                loadImage("static/images/noimage.jpg");
                 cactus = loadImage("static/images/cactus.jpg");
             } catch (Exception e) {
 
