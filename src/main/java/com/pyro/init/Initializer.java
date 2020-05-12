@@ -151,7 +151,7 @@ public class Initializer implements ApplicationListener<ApplicationReadyEvent> {
         } catch (final IOException e) {
 
             System.out.println("\n_____cannot read bytes_____!");
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             System.out.println("\n___________________________!");
 
         }

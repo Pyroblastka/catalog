@@ -102,6 +102,7 @@ public class PrivateController {
             content = Files.readAllBytes(path);
         } catch (final IOException e) {
             System.out.println("\n_____cannot read bytes_____!");
+            e.printStackTrace();
         }
 
         MultipartFile result = new MockMultipartFile(path.getFileName().toString(),
