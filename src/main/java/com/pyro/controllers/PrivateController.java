@@ -1,6 +1,7 @@
 package com.pyro.controllers;
 
 import com.pyro.entities.Discussion;
+import com.pyro.entities.Message;
 import com.pyro.entities.Product;
 import com.pyro.entities.User;
 import com.pyro.repositories.DiscussionRepository;
@@ -69,7 +70,9 @@ public class PrivateController {
         }
 
         model.addAttribute("messages", map);
-        model.addAttribute("lastDate", messageRepository.findByUserOrderByDateDesc(user).get(0).getDate());
+        List<Message> byUserOrderByDateDesc = messageRepository.findByUserOrderByDateDesc(user);
+        if(byUserOrderByDateDesc!= null && byUserOrderByDateDesc.size()>0)
+        model.addAttribute("lastDate", byUserOrderByDateDesc.get(0).getDate());
 
         return "private";
     }
