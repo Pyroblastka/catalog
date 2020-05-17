@@ -86,6 +86,10 @@ public class AdminController {
             sid = fileStorageService.storeFile(image).getId();
             product.setSrc(String.valueOf(sid));
         }
+            if(product.getId()!=0){
+                Product product1 = productRepository.findById(product.getId()).get();
+                product.setSrc(product1.getSrc());
+            }
 
         if (sid == null && product.getSrc() == null) {
             String noimage = loadImage("static/images/noimage.jpg");
