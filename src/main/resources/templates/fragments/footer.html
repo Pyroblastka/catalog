@@ -5,14 +5,37 @@
 </head>
 <body>
 <div th:fragment="footer">
-    <br>
-    <hr>
-        <footer class="page-footer  fixed-bottom">
+<br>
+<br>
+        <footer class="my-footer" id="footer" >
+            <div class="footer-copyright text-center  ">
 
-            <div class="footer-copyright text-center py-3  ">
                 ©2020 pyro.com
             </div>
         </footer>
+    <script>
+        $( window ).resize(function() {
+           resize();
+        });
+
+        if ($(document.body).height() <= $(window).height()){
+            $("#footer").css("position","absolute");
+        }
+        else {
+            $("#footer").css("position","static");
+        }
+
+        function resize() {
+
+            if ($(document.body).height() <= $(window).height()){
+                $("#footer").css("position","absolute");
+            }
+            else {
+                $("#footer").css("position","static");
+            }
+        }
+    </script>
+
 </div>
 </body>
 </html>

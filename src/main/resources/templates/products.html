@@ -7,9 +7,9 @@
 <body>
 
 <div th:replace="fragments/header :: header"/>
-
+<div class="container">
 <div class="row "  style="margin-top: 5%" >
-    <div class="col-3">
+    <div class="col-3 col-sm-3">
         <div class="sidenav" id="sidenav">
             <a th:href="@{/products/kingdom}" href="#about" class="point">Царство<span class="badge badge-secondary" th:text="${kingdomCount}"></span></a>
             <a th:href="@{/products/phylum}" href="#services" class="point">Тип<span class="badge badge-secondary" th:text="${phylumCount}"></span></a>
@@ -62,8 +62,9 @@
 
 <!-- /.container -->
 
-
+</div>
 <div th:replace="fragments/footer :: footer"/>
+
 
 
 </body>

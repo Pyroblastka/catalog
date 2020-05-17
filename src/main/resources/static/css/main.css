@@ -1,6 +1,5 @@
 body{
     background: linear-gradient(45deg, #EECFBA, #C5DDE8);
-    padding-bottom: 70px;
 }
 
 img{
@@ -16,12 +15,7 @@ img{
     height: 32rem;
     width: 32rem;
 }
-footer{
-    width: 100%;
 
-    white-space: nowrap;
-    bottom:0;
-}
 .tdtext{
     text-align: justify;
 }
@@ -29,4 +23,12 @@ footer{
 .catList{
 
     background: initial;
+}
+.my-footer
+{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
 }
