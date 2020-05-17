@@ -3,6 +3,7 @@ package com.pyro.controllers;
 
 import com.pyro.entities.classification.AbstractStair;
 import com.pyro.entities.classification.Genus;
+import com.pyro.repositories.UserRepository;
 import com.pyro.repositories.classification.*;
 import com.pyro.service.UserService;
 import com.pyro.service.classification.ProductService;
@@ -21,8 +22,7 @@ public class CategoryController {
 
     @Autowired
     GenusRepository genusRepository;
-    @Autowired
-    UserService userService;
+
     @Autowired
     private FamilyRepository familyRepository;
     @Autowired

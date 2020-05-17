@@ -23,7 +23,7 @@
         <div class="row " sec:authorize="hasRole('ROLE_ADMIN')">
             <div class="col">
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <form  action="/admin/editproduct" method="get">
+                    <form action="/admin/editproduct" method="get">
                         <input th:value="${product.id}" name="id" type="number" hidden="hidden">
                         <button type="submit" class="btn btn-outline-info">Редактировать</button>
                     </form>
@@ -39,7 +39,7 @@
             </div>
 
         </div>
-        <hr sec:authorize="hasRole('ROLE_ADMIN')" >
+        <hr sec:authorize="hasRole('ROLE_ADMIN')">
 
         <div class="row ">
             <div class="col">
@@ -49,12 +49,14 @@
 
                 <div class="row ">
                     <div class="col ">
-                        <h1 class="display-4"><div th:text="${product.name} "></div> </h1>
+                        <h1 class="display-4">
+                            <div th:text="${product.name} "></div>
+                        </h1>
                     </div>
 
                     <h3>
-                        <span  th:if="${starChecked}" style="color:orange" id="star" class="far fa-star fas" ></span>
-                        <span  th:if="not ${starChecked}" style="color:orange" id="star" class="far fa-star" ></span>
+                        <span th:if="${starChecked}" style="color:orange" id="star" class="far fa-star fas"></span>
+                        <span th:if="not ${starChecked}" style="color:orange" id="star" class="far fa-star"></span>
                     </h3>
                 </div><!--PRODUCT NAME-->
                 <div class="row align-items-end">
@@ -105,10 +107,10 @@
         </div>
 
         <div class="row">
-        <div class="col">
-            <hr>
-            <div th:replace="fragments/comments :: comments"/>
-        </div>
+            <div class="col">
+                <hr>
+                <div th:replace="fragments/comments :: comments"/>
+            </div>
         </div>
     </div>
 
@@ -119,14 +121,14 @@
     var productId = $("#unique").val();
 
     $("#star").click(function () {
-        let t = JSON.stringify({"productId":productId});
+        let t = JSON.stringify({"productId": productId});
         $.post({
             url: 'private/favorite',               // указываем URL и
-            dataType : "json",                     // тип загружаемых данных
+            dataType: "json",                     // тип загружаемых данных
             contentType: "application/json; charset=utf-8",
             data: t,
             success: function (data, textStatus) { // вешаем свой обработчик на функцию success
-                if(data === true){
+                if (data === true) {
                     $("#star").addClass('fas');
                 } else {
                     $("#star").removeClass('fas');

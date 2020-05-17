@@ -6,7 +6,7 @@
 <body>
 <div th:fragment="comments">
 
-    <div  sec:authorize="hasRole('ROLE_ANONYMOUS')" >
+    <div sec:authorize="hasRole('ROLE_ANONYMOUS')">
         <h5>Чтобы оставить комментарий, пожалуйста, <a th:href="@{/login}">авторизируйтесь.</a></h5>
     </div>
     <div sec:authorize="hasAnyRole('ROLE_USER, ROLE_ADMIN')">
@@ -15,10 +15,11 @@
                 <form action="/sendcomment" method="post">
                     <input name="product" hidden="hidden" th:value="${product.name}" value="0">
                     <input name="isDiscussion" hidden="hidden" th:value="${isDiscussion}" type="text">
-                    <input name="msg" type="number" hidden="hidden" value="0">
+                    <input name="msg"  hidden="hidden" th:value="${0L}">
                     <div class="form-group">
                         <label for="comment">Ваше сообщение</label>
-                        <textarea maxlength="300" id="comment" name="comment" class="form-control" rows="3" onfocusout="clearMsgId(this)"></textarea>
+                        <textarea maxlength="300" id="comment" name="comment" class="form-control" rows="3"
+                                  onfocusout="clearMsgId(this)"></textarea>
                     </div>
                     <button type="submit" class="btn btn-outline-secondary">Отправить</button>
                 </form>
@@ -55,46 +56,129 @@
                             because sometimes, when copying some CSS with comments between, BS doesn&#8217;t know how to
                             handle that.</p>
                         <span class="bbp-reply-post-date" th:text="${message.date}">December 6, 2017 at 8:25 am</span>
+                        <div class="action" sec:authorize="hasRole('ROLE_ADMIN')">
+                            <button th:name="${message.id}" type="button" class="btn btn-info btn-xs" title="Edit"
+                                    onclick="edit(this)">
+                                <span class="fal fa-pen"></span>
+                            </button>
 
-                    <div class="action" sec:authorize="hasRole('ROLE_ADMIN')">
-                        <button th:name="${message.id}" type="button" class="btn btn-info btn-xs" title="Edit" onclick="edit(this)">
-                            <span class="fal fa-pen"></span>
-                        </button>
-
-                        <button th:name="${message.id}" type="button" class="btn btn-danger btn-xs" title="Delete" onclick="rem(this)">
-                            <span class="far fa-trash-alt"></span>
-                        </button>
-                    </div>
+                            <button th:name="${message.id}" type="button" class="btn btn-danger btn-xs" title="Delete"
+                                    onclick="rem(this)">
+                                <span class="far fa-trash-alt"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
-
+                <div class="col-1">
+                    <div class="initialColor" th:attr="messageId=${message.id}, cval=${message.votes.get(userId)}"
+                         sec:authorize="hasAnyRole('ROLE_USER, ROLE_ADMIN')"></div>
+                    <div th:replace="fragments/comments :: vote (${message.rating}, ${message.id})"/>
+                </div>
             </div>
-        </li><!-- .bbp-body -->
+        </li>
+    </ul>
 
+    <script sec:authorize="hasAnyRole('ROLE_USER, ROLE_ADMIN')">
 
-    </ul><!-- #topic-8286-replies -->
+        $(document).ready(function () {
 
-    <script>
+            let list = document.getElementsByClassName('initialColor');
+            for (let i = 0; i < list.length; i++) {
+                let messageId = list[i].getAttribute('messageId');
+                let cval = list[i].getAttribute('cval');
 
-        async function send() {
+                colorifer(Number.parseInt(cval), messageId);
+            }
 
-            fetch(document.location.origin + "/sendcomment/?value=" + input.value, {
-                credentials: 'same-origin',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            }).then(response => response.json())
-                .then(resp => {
-                    if (resp.toString() == 'ok') {
+        });
 
-                    }
-                });
+        function plus(element) {
+            let temp = element.getAttribute("messageId");
+            let s = {"messageId": temp, "dir": "up"};
+            vote(s);
+
         }
 
+        function minus(element) {
+            let temp = element.getAttribute("messageId");
+            let s = {"messageId": temp, "dir": "down"};
+            vote(s);
+        }
+
+        function colorifer(cval, messageId) {
+            console.log('colorifer(' + messageId + ', ' + cval + ');');
+            let upclasses = 'fas fa-arrow-alt-circle-up vote';
+            let downclasses = 'fas fa-arrow-alt-circle-down vote';
+
+            let elem = document.getElementById('messageId' + messageId);
+            let spans = elem.getElementsByTagName('span');
+            if (cval === 1) {
+                spans[0].setAttribute('class', upclasses + ' story__rating-up')
+
+                spans[1].setAttribute('class', downclasses);
+
+
+            } else if (cval === 0) {
+                spans[0].setAttribute('class', upclasses);
+                spans[1].setAttribute('class', downclasses);
+
+            } else if (cval === -1) {
+                spans[0].setAttribute('class', upclasses);
+
+                spans[1].setAttribute('class', downclasses + ' story__rating-down')
+            }
+        }
+
+    </script>
+
+    <script>
+        function vote(temp) {
+            let t = JSON.stringify(temp);
+            $.post({
+                url: '/private/vote',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: t,
+                success: function (data, textStatus) {
+                    let scoreid = 'messagescore' + temp.messageId;
+                    let score = document.getElementById(scoreid);
+                    score.innerText = data.rating;
+                    colorifer(data.cval, temp.messageId);
+
+                }
+            });
+
+
+        }
+
+        /*
+                $("#voteUp").click(function () {
+                    let t = JSON.stringify({"commentId": productId, "dir": "up"});
+                    $.post({
+                        url: 'private/vote',               // указываем URL и
+                        dataType: "json",                     // тип загружаемых данных
+                        contentType: "application/json; charset=utf-8",
+                        data: t,
+                        success: function (data, textStatus) { // вешаем свой обработчик на функцию success
+                            if (data === 1) {
+
+                                $("#voteUp").addClass('fas');
+                            } else if (data === 0) {
+
+                                $("#voteUp").removeClass('fas');
+
+                            } else if (data === -1) {
+
+                                $("#voteUp").removeClass('fas');
+                            }
+                        }
+                    });
+                });
+
+        */
         async function edit(btn) {
 
-            let elem  = document.getElementsByName(btn.name)[0];
+            let elem = document.getElementsByName(btn.name)[0];
             elem = elem.parentNode.parentNode;
             let text = elem.firstElementChild.innerText;
 
@@ -107,11 +191,11 @@
         }
 
         function rem(btn) {
-            document.location.href='/deletecomment?msgId='+btn.name;
+            document.location.href = '/deletecomment?msgId=' + btn.name;
         }
 
         function clearMsgId(area) {
-            if(area.value.length===0){
+            if (area.value.length === 0) {
                 let idInput = document.getElementsByName('msg')[0];
                 idInput.value = '';
             }
@@ -119,5 +203,21 @@
     </script>
 </div>
 
+
+<div th:fragment="vote (score, id)">
+    <div class="story__rating-block" th:id="'messageId'+${id}">
+        <div class="story__rating-up green-is-not-red" title="Поставить плюсик">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon--ui__rating-up icon--ui__rating-up_story">
+                <span class="fas fa-arrow-alt-circle-up vote" onclick="plus(this)" th:attr="messageId=${id}"></span>
+            </svg>
+        </div>
+        <div th:id="'messagescore'+${id}" class="story__rating-count" th:text="${score}">13884</div>
+        <div class="story__rating-down" title="Поставить минус">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon--ui__rating-down icon--ui__rating-down_story">
+                <span class="fas fa-arrow-alt-circle-down vote" onclick="minus(this)" th:attr="messageId=${id}"></span>
+            </svg>
+        </div>
+    </div>
+</div>
 </body>
 </html>

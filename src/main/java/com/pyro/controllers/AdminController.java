@@ -4,9 +4,11 @@ package com.pyro.controllers;
 import com.pyro.entities.Message;
 import com.pyro.entities.Product;
 import com.pyro.entities.User;
+import com.pyro.entities.classification.Genus;
 import com.pyro.repositories.MessageRepository;
 import com.pyro.repositories.ProductRepository;
-import com.pyro.repositories.classification.GenusRepository;
+import com.pyro.repositories.UserRepository;
+import com.pyro.repositories.classification.*;
 import com.pyro.service.ClassificationService;
 import com.pyro.service.DBFileStorageService;
 import com.pyro.service.UserService;
@@ -27,19 +29,33 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class AdminController {
 
     @Autowired
+    UserRepository userRepository;
+    @Autowired
     ProductRepository productRepository;
     @Autowired
-    GenusRepository catRepository;
+    GenusRepository genusRepository;
+
+    @Autowired
+    private FamilyRepository familyRepository;
+    @Autowired
+    private KlassRepository klassRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private PhylumRepository phylumRepository;
+    @Autowired
+    private KingdomRepository kingdomRepository;
     @Autowired
     DBFileStorageService fileStorageService;
-    @Autowired
-    UserService userService;
     @Autowired
     MessageRepository messageRepository;
     @Autowired
@@ -82,8 +98,29 @@ public class AdminController {
     @RequestMapping(value = "/admin/deleteproduct", method = RequestMethod.POST)
     public String deleteProduct(@RequestParam("id") Long id, @RequestParam("category") Long catId) {
 
+        Product product = productRepository.findById(id).get();
         productRepository.deleteById(id);
-        return "redirect:/products?catId=" + catId.toString();
+        Genus genus = product.getGenus();
+        if(genus.getProducts().size() < 1) {
+            if( genus.getFamily().getGenuses().size() < 1) {
+                if( genus.getFamily().getOrder().getFamilies().size() < 1) {
+                    if( genus.getFamily().getOrder().getKlass().getOrders().size() < 1) {
+                        if( genus.getFamily().getOrder().getKlass().getPhylum().getKlasses().size() < 1) {
+                            if( genus.getFamily().getOrder().getKlass().getPhylum().getKlasses().size() < 1) {
+                                phylumRepository.deleteById(genus.getFamily().getOrder().getKlass().getId());
+                            }
+                            phylumRepository.deleteById(genus.getFamily().getOrder().getKlass().getPhylum().getId());
+                        }
+                        klassRepository.deleteById(genus.getFamily().getOrder().getKlass().getId());
+                    }
+                    orderRepository.deleteById(genus.getFamily().getOrder().getId());
+                }
+                familyRepository.deleteById( genus.getFamily().getId());
+            }
+            genusRepository.deleteById(genus.getId());
+        }
+
+        return "redirect:/products/kingdom";
     }
 
 
@@ -95,15 +132,14 @@ public class AdminController {
         return "addproduct";
     }
 
-    private void sendMessageToAll(Product product) {
-        Message message = new Message();
-        message.setDate(new Date());
-        message.setHeader("Пополнение ассортимента");
-        message.setText("В категорию " + product.getCategory().getName() + " поступили новые товары. ");
-        for (User user : userService.findAll()) {
-            message.setUser(user);
+    @GetMapping("/admin/deleteMessage")
+    public String deleteMessage(@RequestParam("header") String header, Principal principal, Model model) {
+        List<Message> byHeader = messageRepository.findByHeader(header);
+        byHeader.forEach(message -> {//ne robit
+            message.setText(message.getText().replace('@',' '));
             messageRepository.saveAndFlush(message);
-        }
+        });
+        return "redirect:/private";
     }
 
     public String loadImage(String pathName) throws IOException {

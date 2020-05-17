@@ -7,6 +7,7 @@ import com.pyro.entities.User;
 import com.pyro.entities.classification.AbstractStair;
 import com.pyro.entities.classification.Genus;
 import com.pyro.repositories.ProductRepository;
+import com.pyro.repositories.UserRepository;
 import com.pyro.repositories.classification.GenusRepository;
 import com.pyro.service.ClassificationService;
 import com.pyro.service.UserService;
@@ -34,7 +35,7 @@ public class ProductController {
     ClassificationService classificationService;
 
     @Autowired
-    UserService userService;
+    UserRepository userRepository;
 
     @GetMapping("/product")
     public String getProduct(@RequestParam(value = "productId", required = true) Long productId,
@@ -44,16 +45,17 @@ public class ProductController {
 
         Product product = productRepository.getOne(productId);
         Hibernate.initialize(product);
+        //Short aShort = product.getMessages().get(0).getVotes().get(69L);
         Collections.sort(product.getMessages(), Message::compareTo);
         if (principal != null) {
-            User user = userService.findByUsername(principal.getName());
+            User user = userRepository.findByUsername(principal.getName());
+            model.addAttribute("userId", user.getId());
             if (user.getFavorits().contains(product))
                 model.addAttribute("starChecked", true);
-        }
-        else{
+        } else {
             model.addAttribute("starChecked", false);
         }
-        model.addAttribute("isDiscussion","false");
+        model.addAttribute("isDiscussion", "false");
 
         model.addAttribute("product", product);
 

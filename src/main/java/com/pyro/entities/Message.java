@@ -2,6 +2,10 @@ package com.pyro.entities;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.prefs.Preferences;
 
 @Entity
 public class Message extends AbstractEntity implements Comparable<Message> {
@@ -21,6 +25,14 @@ public class Message extends AbstractEntity implements Comparable<Message> {
     @Column
     private String header;
 
+
+    @ElementCollection
+    @CollectionTable(name = "user_message")
+    @MapKeyColumn(name = "user_id")
+    @Column(name = "vote_value")
+   // @MapKey(name = "user_message")
+    Map<Long, Short> votes;
+
     public Message() {
     }
 
@@ -30,6 +42,14 @@ public class Message extends AbstractEntity implements Comparable<Message> {
         this.text = text;
         this.date = date;
         this.rating = 0;
+        this.votes = new HashMap<>();
+    }
+    public Map<Long, Short> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(Map<Long, Short> votes) {
+        this.votes = votes;
     }
 
     public String getHeader() {
@@ -82,6 +102,6 @@ public class Message extends AbstractEntity implements Comparable<Message> {
 
     @Override
     public int compareTo(Message o) {
-        return this.date.before(o.date) ? 1 : this.date.after(o.date) ? -1 : 0;
+        return this.date.before(o.date) ? -1 : this.date.after(o.date) ? 1 : 0;
     }
 }

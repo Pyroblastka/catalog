@@ -11,6 +11,8 @@ import java.util.List;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message>  findByUser(User user);
+    List<Message>  findByHeader(String header);
+    List<Message>  findByTextContaining(String input);
     List<Message>  findByUserOrderByDateDesc(User user);
 
     @Query(nativeQuery = true, value =

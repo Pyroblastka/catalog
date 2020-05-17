@@ -1,8 +1,11 @@
 package com.pyro.api;
 
+import com.pyro.entities.Message;
 import com.pyro.entities.Product;
 import com.pyro.entities.User;
+import com.pyro.repositories.MessageRepository;
 import com.pyro.repositories.ProductRepository;
+import com.pyro.repositories.UserRepository;
 import com.pyro.repositories.classification.KingdomRepository;
 import com.pyro.service.ClassificationService;
 import com.pyro.service.UserService;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.Transient;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,11 +28,11 @@ public class DataController {
     @Autowired
     KingdomRepository kingdomRepository;
     @Autowired
-    UserService userService;
+    UserRepository userService;
     @Autowired
     ClassificationService classificationService;
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private MessageRepository messageRepository;
 
     @Transient
     @RequestMapping("/searchq")
@@ -62,7 +66,43 @@ public class DataController {
             user.getFavorits().add(object);
             result = true;
         }
-        userService.save(user);
+        userService.saveAndFlush(user);
         return result;
+    }
+
+    @PostMapping("/private/vote")
+    public Map vote(@RequestBody Map data, Principal principal) {
+        if (principal == null)
+            return null;
+
+        long messageId = Long.valueOf((String) data.get("messageId"));
+        User user = userService.findByUsername(principal.getName());
+        Message message = messageRepository.findById(messageId).get();
+
+        if(message.getVotes()==null){
+            message.setVotes(new HashMap<>());
+        }
+        short val = message.getVotes().getOrDefault(user.getId(), (short)0);
+        if(data.get("dir").equals("up")){
+            if(val < 1){
+                message.getVotes().put(user.getId(), ++val);
+                message.setRating(message.getRating()+1);
+                message = messageRepository.saveAndFlush(message);
+            }
+        }
+
+        if(data.get("dir").equals("down")){
+            if(val > -1){
+                message.getVotes().put(user.getId(), --val);
+                message.setRating(message.getRating()-1);
+                message = messageRepository.saveAndFlush(message);
+            }
+        }
+
+
+        Map<String, Integer> output = new HashMap<>();
+        output.put("rating", message.getRating());
+        output.put("cval", (int) val);
+        return output;
     }
 }

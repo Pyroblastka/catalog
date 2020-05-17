@@ -13,6 +13,10 @@
 <table>
     <tr>
         <td style="padding-right: 3%; width: 50%">
+            <div th:if="${error != null}" class="alert alert-block alert-danger messages status">
+                <a class="close" data-dismiss="alert" href="#">×</a>
+                <div th:text="${error}"></div>
+            </div>
             <form action="/admin/product" method="post" enctype="multipart/form-data" th:object="${defaultProduct}">
             <input name="id" type="number" hidden="hidden" th:value="${defaultProduct.id}">
             <div class="form-group  ">

@@ -7,6 +7,7 @@ import com.pyro.entities.User;
 import com.pyro.repositories.DiscussionRepository;
 import com.pyro.repositories.MessageRepository;
 import com.pyro.repositories.ProductRepository;
+import com.pyro.repositories.UserRepository;
 import com.pyro.service.DBFileStorageService;
 import com.pyro.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class CommentController {
     @Autowired
     DiscussionRepository discussionRepository;
     @Autowired
-    UserService userService;
+    UserRepository userRepository;
     @Autowired
     MessageRepository messageRepository;
     @Autowired
@@ -51,7 +52,7 @@ public class CommentController {
             return "redirect:" + referer;
         }
 
-        User user = userService.findByUsername(principal.getName());
+        User user = userRepository.findByUsername(principal.getName());
         Message message = new Message(user, product, msg, new Date());
 
         message = messageRepository.saveAndFlush(message);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <div th:replace="fragments/header :: header-css"/>
 </head>
@@ -29,9 +29,12 @@
                            aria-controls="goods"
                            aria-selected="false">Мои обсуждения</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_USER')">
                         <a class="nav-link" id="profile-tab" data-toggle="tab" href="#statistic" role="tab"
                            aria-controls="statistic" aria-selected="false">Статистика</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a class="nav-link" id="add-tab" href="/admin/product"> Добавить в каталог</a>
                     </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
@@ -39,26 +42,51 @@
                         <div class="overflow-auto " style="max-height: 29rem;">
                             <ul class="list-group">
                                 <li th:each="message : ${messages}"
-                                    th:attr="data-target='#demo'+${message.key}"
                                     class="list-group-item d-flex justify-content-between align-items-center">
                                     <a th:href="${message.value}">
-                                    <div th:text="${message.key}">
-                                    </div>
+                                        <div th:text="${message.key}">
+                                        </div>
                                     </a>
+                                    <a sec:authorize="hasRole('ROLE_ADMIN')"
+                                       th:href="@{/admin/deleteMessage(header=${message.key})}"><span id="cross"
+                                                                                                      class="far fa-times-circle"></span></a>
                                 </li>
                             </ul>
 
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="statistic" role="tabpanel" aria-labelledby="statistic-tab">
+                    <div sec:authorize="hasRole('ROLE_USER')" class="tab-pane fade" id="statistic" role="tabpanel" aria-labelledby="statistic-tab">
                         <div class="overflow-auto">
-                            <br>
-                            <div class="col">
-                                <p>Последняя активность: <b th:text="${lastDate}"></b></p>
-                            </div>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        Всего сообщений:
+                                    </div>
+                                    <div th:text="${statistic.allMessageCount}"></div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        Сообщений за последнюю неделю:
+                                    </div>
+                                    <div th:text="${statistic.weekMessageCount}"></div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        Поставил плюсов:
+                                    </div>
+                                    <div th:text="${statistic.plus}"></div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        Поставил минусов:
+                                    </div>
+                                    <div th:text="${statistic.minus}"></div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="tab-pane fade active show" id="favorites" role="tabpanel" aria-labelledby="favorites-tab">
+                    <div class="tab-pane fade active show" id="favorites" role="tabpanel"
+                         aria-labelledby="favorites-tab">
                         <div class="overflow-auto">
                             <div class="overflow-auto " style="max-height: 29rem;">
                                 <ul class="list-group">

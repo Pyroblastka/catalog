@@ -50,7 +50,6 @@ public class MainController {
 
     @GetMapping("/registration")
     public String reg(Model model) {
-
         return "registration";
     }
 
