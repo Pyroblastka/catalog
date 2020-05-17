@@ -56,7 +56,7 @@ public class DiscussionController {
         if (disc == null) {
             Optional<Discussion> byId = discussionRepository.findById(Long.valueOf(discussion));
 
-            if (byId.isEmpty()) {
+            if (byId.equals(Optional.empty())) {
                 return "redirect:/discussion";
             } else {
                 disc = byId.get();
