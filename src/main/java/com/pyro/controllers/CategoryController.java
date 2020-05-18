@@ -5,6 +5,7 @@ import com.pyro.entities.classification.AbstractStair;
 import com.pyro.entities.classification.Genus;
 import com.pyro.repositories.UserRepository;
 import com.pyro.repositories.classification.*;
+import com.pyro.service.ClassificationService;
 import com.pyro.service.UserService;
 import com.pyro.service.classification.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +36,14 @@ public class CategoryController {
     private KingdomRepository kingdomRepository;
     @Autowired
     private ProductService productRepository;
+    @Autowired
+    private ClassificationService classificationService;
 
     @GetMapping("/products/{category}")
     public String getProductList(@PathVariable String category,
                                  @RequestParam(value = "catId", required = false) Long catId,
                                  Model model) throws IllegalAccessException {
+        classificationService.cleanEmpty(null);
 
         List<? extends AbstractStair> downStairs;
         switch (category.toLowerCase()) {

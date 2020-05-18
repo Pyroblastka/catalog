@@ -23,12 +23,12 @@ public class ProductService {
     GenusService genusService;
 
     @Transactional
-    public void save(Product product) {
+    public Product save(Product product) {
         Genus genus = product.getGenus();
         if(genus!=null){
             product.setGenus(genusService.save(genus));
         }
-        productRepository.saveAndFlush(product);
+        return productRepository.saveAndFlush(product);
     }
 
 }

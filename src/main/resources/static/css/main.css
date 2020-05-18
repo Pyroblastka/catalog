@@ -1,12 +1,12 @@
 body{
-    background: linear-gradient(45deg, #EECFBA, #C5DDE8);
+    background: linear-gradient(90deg, #EECFBA, #C5DDE8);
 }
 
 img{
     object-fit: cover;
 }
 .card-image{
-    height: 18rem;
+    height: 17rem;
 }
 .small-card-image{
      height: 13rem;

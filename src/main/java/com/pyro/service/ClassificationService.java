@@ -1,6 +1,7 @@
 package com.pyro.service;
 
 
+import com.pyro.entities.Product;
 import com.pyro.entities.classification.AbstractStair;
 import com.pyro.repositories.ProductRepository;
 import com.pyro.repositories.classification.*;
@@ -34,10 +35,35 @@ public class ClassificationService {
     @Autowired
     private ProductRepository productRepository;
 
-    public FamilyRepository getFamilyRepository() {
-        return familyRepository;
+    public void cleanEmpty(Product product) {
+        genusRepository.deleteEmpty();
+        familyRepository.deleteEmpty();
+        orderRepository.deleteEmpty();
+        klassRepository.deleteEmpty();
+        phylumRepository.deleteEmpty();
+        kingdomRepository.deleteEmpty();
+        /*Hibernate.initialize(product);
+        Genus genus = product.getGenus();
+        if(genus.getProducts().size() < 1) {
+            if( genus.getFamily().getGenuses().size() < 1) {
+                if( genus.getFamily().getOrder().getFamilies().size() < 1) {
+                    if( genus.getFamily().getOrder().getKlass().getOrders().size() < 1) {
+                        if( genus.getFamily().getOrder().getKlass().getPhylum().getKlasses().size() < 1) {
+                            if( genus.getFamily().getOrder().getKlass().getPhylum().getKlasses().size() < 1) {
+                                phylumRepository.deleteById(genus.getFamily().getOrder().getKlass().getId());
+                            }
+                            phylumRepository.deleteById(genus.getFamily().getOrder().getKlass().getPhylum().getId());
+                        }
+                        klassRepository.deleteById(genus.getFamily().getOrder().getKlass().getId());
+                    }
+                    orderRepository.deleteById(genus.getFamily().getOrder().getId());
+                }
+                familyRepository.deleteById( genus.getFamily().getId());
+            }
+            genusRepository.deleteById(genus.getId());
+        }
+        */
     }
-
     public  List<? extends AbstractStair> findByNameContainsIgnoreCase(String letter) {
 
         List<? extends AbstractStair> stairs = kingdomRepository.findByNameContainsIgnoreCase(letter);

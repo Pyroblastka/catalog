@@ -7,9 +7,9 @@
 <body>
 
 <div th:replace="fragments/header :: header"/>
-<div class="container">
+<div class="">
 <div class="row "  style="margin-top: 5%" >
-    <div class="col-3 col-sm-3">
+    <div class="col-3 col-sm-3" style="margin-top: 5%" >
         <div class="sidenav" id="sidenav">
             <a th:href="@{/products/kingdom}" href="#about" class="point">Царство<span class="badge badge-secondary" th:text="${kingdomCount}"></span></a>
             <a th:href="@{/products/phylum}" href="#services" class="point">Тип<span class="badge badge-secondary" th:text="${phylumCount}"></span></a>
@@ -24,10 +24,10 @@
         <h1 th:text="${catname}">Категории</h1>
         <hr>
         <div class="row">
-            <div class="col-4" th:each="product1 : ${products}">
+            <div class="col-4 col-sm-auto" th:each="product1 : ${products}">
                 <a th:href="@{/products/{path}(path = ${path}, catId=${product1.id})}" href="#">
-                    <div class="card" style="margin-bottom: 5%">
-                        <img th:src="${product1.src}" src="images/onion.jpg" class="small-card-image">
+                    <div class="card" style="margin-bottom: 5%; width: 17rem">
+                        <img th:src="${product1.src}" src="images/onion.jpg" class="card-image">
                         <div class="card-body">
 
                             <p class="card-text" th:text="${product1.name}">Луковичные растения</p>

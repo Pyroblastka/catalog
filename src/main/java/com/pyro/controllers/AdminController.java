@@ -24,6 +24,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -104,26 +105,6 @@ public class AdminController {
 
         Product product = productRepository.findById(id).get();
         productRepository.deleteById(id);
-        Genus genus = product.getGenus();
-        if(genus.getProducts().size() < 1) {
-            if( genus.getFamily().getGenuses().size() < 1) {
-                if( genus.getFamily().getOrder().getFamilies().size() < 1) {
-                    if( genus.getFamily().getOrder().getKlass().getOrders().size() < 1) {
-                        if( genus.getFamily().getOrder().getKlass().getPhylum().getKlasses().size() < 1) {
-                            if( genus.getFamily().getOrder().getKlass().getPhylum().getKlasses().size() < 1) {
-                                phylumRepository.deleteById(genus.getFamily().getOrder().getKlass().getId());
-                            }
-                            phylumRepository.deleteById(genus.getFamily().getOrder().getKlass().getPhylum().getId());
-                        }
-                        klassRepository.deleteById(genus.getFamily().getOrder().getKlass().getId());
-                    }
-                    orderRepository.deleteById(genus.getFamily().getOrder().getId());
-                }
-                familyRepository.deleteById( genus.getFamily().getId());
-            }
-            genusRepository.deleteById(genus.getId());
-        }
-
         return "redirect:/products/kingdom";
     }
 
@@ -139,12 +120,14 @@ public class AdminController {
     @GetMapping("/admin/deleteMessage")
     public String deleteMessage(@RequestParam("header") String header, Principal principal, Model model) {
         List<Message> byHeader = messageRepository.findByHeader(header);
-        byHeader.forEach(message -> {//ne robit
+        byHeader.forEach(message -> {
             message.setText(message.getText().replace('@',' '));
             messageRepository.saveAndFlush(message);
         });
         return "redirect:/private";
     }
+
+
 
     public String loadImage(String pathName) throws IOException {
         ClassPathResource resource = new ClassPathResource(pathName);

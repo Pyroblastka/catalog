@@ -87,10 +87,12 @@ public class ProductController {
     @GetMapping("/products")
     public String getProductList(@RequestParam(value = "catId", required = true) Long catId,
                                  Model model) {
+        classificationService.cleanEmpty(null);
         Genus genus = genusRepository.findById(catId).get();
         List<Product> list = productRepository.findByGenus(genus);
         model.addAttribute("products", list);
         return "products";
+
     }
 
 }
