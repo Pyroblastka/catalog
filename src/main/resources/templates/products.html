@@ -1,26 +1,56 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" style="  height: 100%;">
 <head>
     <div th:replace="fragments/header :: header-css"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/sidebar.css}"/>
 </head>
-<body>
+<body style="  height: 100%;">
 
 <div th:replace="fragments/header :: header"/>
-<div class="">
-<div class="row "  style="margin-top: 5%" >
-    <div class="col-3 col-sm-3" style="margin-top: 5%" >
-        <div class="sidenav" id="sidenav">
-            <a th:href="@{/products/kingdom}" href="#about" class="point">Царство<span class="badge badge-secondary" th:text="${kingdomCount}"></span></a>
-            <a th:href="@{/products/phylum}" href="#services" class="point">Тип<span class="badge badge-secondary" th:text="${phylumCount}"></span></a>
-            <a th:href="@{/products/klass}" href="#clients" class="point">Класс<span class="badge badge-secondary"th:text="${klassCount}">2</span></a>
-            <a th:href="@{/products/order}" href="#contact" class="point">Отряд<span class="badge badge-secondary"th:text="${orderCount}">2</span></a>
-            <a th:href="@{/products/family}" href="#contact" class="point">Семейство<span class="badge badge-secondary"th:text="${familyCount}">2</span></a>
-            <a th:href="@{/products/genus}" href="#contact" class="point">Род<span class="badge badge-secondary"th:text="${genusCount}">2</span></a>
+
+<div class="row" style="height:100%; " >
+
+    <div class="col-3 col-sm-3" style="background: white;" >
+        <div class="sidenav list-group list-group-flush" id="sidenav">
+
+                <li class=" list-group-item d-flex justify-content-between align-items-center  ">
+                   <h2>Категории</h2>
+                </li>
+
+            <a th:href="@{/products/kingdom}" href="#about" class="point list-group-item">
+                <li class="  d-flex justify-content-between align-items-center  ">
+                   Царство<span class="badge badge-secondary" th:text="${kingdomCount}"></span>
+                </li>
+            </a>
+            <a th:href="@{/products/phylum}" href="#services" class="point list-group-item">
+                <li class="  d-flex justify-content-between align-items-center">
+                Тип<span class="badge badge-secondary" th:text="${phylumCount}"></span>
+                </li>
+            </a>
+            <a th:href="@{/products/klass}" href="#clients" class="point list-group-item">
+                <li class="  d-flex justify-content-between align-items-center ">
+                Класс<span class="badge badge-secondary"th:text="${klassCount}">2</span>
+                </li>
+            </a>
+            <a th:href="@{/products/order}" href="#contact" class="point list-group-item">
+                <li class="  d-flex justify-content-between align-items-center ">
+                Отряд<span class="badge badge-secondary"th:text="${orderCount}">2</span>
+                </li>
+            </a>
+            <a th:href="@{/products/family}" href="#contact" class="point list-group-item">
+                <li class="  d-flex justify-content-between align-items-center ">
+                Семейство<span class="badge badge-secondary"th:text="${familyCount}">2</span>
+                </li>
+            </a>
+            <a th:href="@{/products/genus}" href="#contact" class="point list-group-item">
+                <li class="  d-flex justify-content-between align-items-center ">
+                Род<span class="badge badge-secondary"th:text="${genusCount}">2</span>
+                </li>
+            </a>
         </div>
     </div>
 
-    <div class="col-sm-8">
+    <div class="col-sm-8" style="margin-top: 2%; margin-left: 2% ; ">
         <h1 th:text="${catname}">Категории</h1>
         <hr>
         <div class="row">
@@ -36,6 +66,9 @@
                 </a>
             </div>
         </div>
+        <div th:replace="fragments/footer :: footer"/>
+
+
     </div>
 </div>
 
@@ -61,11 +94,6 @@
 </script>
 
 <!-- /.container -->
-
-</div>
-<div th:replace="fragments/footer :: footer"/>
-
-
 
 </body>
 </html>
