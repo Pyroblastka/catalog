@@ -20,26 +20,7 @@
                 href="/private">в корзину</a>.
         </div>
 
-        <div class="row " sec:authorize="hasRole('ROLE_ADMIN')">
-            <div class="col">
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <form action="/admin/editproduct" method="get">
-                        <input th:value="${product.id}" name="id" type="number" hidden="hidden">
-                        <button type="submit" class="btn btn-outline-info">Редактировать</button>
-                    </form>
-                      
-                    <form action="/admin/deleteproduct" method="post">
-                        <input th:value="${product.id}" name="id" type="number" hidden="hidden">
-                        <input th:value="${product.category.id}" name="category" type="number" hidden="hidden">
-                        <button type="submit"
-                                class="btn btn-outline-danger">Удалить
-                        </button>
-                    </form>
-                </div>
-            </div>
 
-        </div>
-        <hr sec:authorize="hasRole('ROLE_ADMIN')">
 
         <div class="row ">
             <div class="col-sm">
@@ -94,6 +75,27 @@
                             </li>
                         </ul>
                     </div>
+                </div>
+            </div>
+
+        </div>
+
+        <hr sec:authorize="hasRole('ROLE_ADMIN')">
+        <div class="row " sec:authorize="hasRole('ROLE_ADMIN')">
+            <div class="col">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <form action="/admin/editproduct" method="get">
+                        <input th:value="${product.id}" name="id" type="number" hidden="hidden">
+                        <button type="submit" class="btn btn-outline-info">Редактировать</button>
+                    </form>
+                      
+                    <form action="/admin/deleteproduct" method="post">
+                        <input th:value="${product.id}" name="id" type="number" hidden="hidden">
+                        <input th:value="${product.category.id}" name="category" type="number" hidden="hidden">
+                        <button type="submit"
+                                class="btn btn-outline-danger">Удалить
+                        </button>
+                    </form>
                 </div>
             </div>
 
