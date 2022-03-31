@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <springtools.version>2.1.6.RELEASE</springtools.version>
+        <springtools.version>2.5.12</springtools.version>
     </properties>
 
     <dependencies>
